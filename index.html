@@ -130,7 +130,7 @@
 
   <div class="panel">
     <h2>The one-paragraph setup</h2>
-    <p class="big">Toast added a record <b>30,000 net locations in 2025</b> (vs 28k '24, 27k '23, 22k '22) and guided to <b>another record in 2026</b>; Q1'26 came in at ~7,000 vs ~6,000 a year ago. The core US SMB engine is mature-but-steady (~20% share, management says core adds stay "in a similar range"), so the <b>incremental net-adds story is now enterprise rollouts (Applebee's, Firehouse Subs, Papa Murphy's, Topgolf, TGI Fridays), international (4 countries) and F&amp;B retail</b> — a bucket that crossed 10k locations and ~$100M ARR in 2025 and doubled y/y. The industry backdrop is unusually supportive of the funnel: restaurant business applications are at <b>record highs (+13% TTM)</b> while net establishment growth is only +1.6% — Toast's adds are share-capture of gross openings plus legacy-POS conversions, not a bet on industry expansion. Watch-items for the short side: GPV/location −1% y/y, enterprise ARPU dilution, soft restaurant traffic (8 straight months of net decline), chain closure wave (Wendy's, Pizza Hut, Papa John's), and a 150bps hardware-cost headwind.</p>
+    <p class="big">Toast added a record <b>30,000 net locations in 2025</b> (vs 28k '24, 27k '23, 23k '22) and guided to <b>another record in 2026</b>; Q1'26 came in at ~7,000 vs ~6,000 a year ago. The core US SMB engine is mature-but-steady (~20% share, management says core adds stay "in a similar range"), so the <b>incremental net-adds story is now enterprise rollouts (Applebee's, Firehouse Subs, Papa Murphy's, Topgolf, TGI Fridays), international (4 countries) and F&amp;B retail</b> — a bucket that crossed 10k locations and ~$100M ARR in 2025 and doubled y/y. The industry backdrop is unusually supportive of the funnel: restaurant business applications are at <b>record highs (+13% TTM)</b> while net establishment growth is only +1.6% — Toast's adds are share-capture of gross openings plus legacy-POS conversions, not a bet on industry expansion. Watch-items for the short side: GPV/location −1% y/y, enterprise ARPU dilution, soft restaurant traffic (8 straight months of net decline), chain closure wave (Wendy's, Pizza Hut, Papa John's), and a 150bps hardware-cost headwind.</p>
   </div>
 
   <div class="panel bb">
@@ -176,7 +176,7 @@
 <section class="tab" id="backdrop">
   <div class="panel">
     <h2>Toast quarterly locations &amp; net adds</h2>
-    <div class="note">Company-disclosed "approximately X" figures from 8-K press releases (CIK 1650164). Net adds marked with * are differences of rounded figures (±1k). Q1 is seasonally the lightest quarter.</div>
+    <div class="note">Totals and net adds as stated by management — cross-verified word-for-word against all 18 earnings-call transcripts via S&P Capital IQ (June 2026). "Over X" disclosures shown as X, so quarterly adds can sum slightly below stated annual records. Q1 is seasonally the lightest quarter.</div>
     <div class="chartbox tall"><canvas id="locChart"></canvas></div>
   </div>
 
@@ -372,15 +372,15 @@
 /* ================= DATA ================= */
 // Toast quarterly: [label, totalLocations, netAdds, exact?]  (locations in thousands)
 const TQ = [
- ["Q4'21",57,null],["Q1'22",62,5],["Q2'22",68,6],["Q3'22",74,6],["Q4'22",79,5],
- ["Q1'23",85,5.5],["Q2'23",93,7.5],["Q3'23",99,6.5],["Q4'23",106,7],
+ ["Q4'21",57,null],["Q1'22",62,5],["Q2'22",68,6],["Q3'22",74,5.5],["Q4'22",79,5.5],
+ ["Q1'23",85,5.5],["Q2'23",93,7.5],["Q3'23",99,6.5],["Q4'23",106,6.5],
  ["Q1'24",112,6],["Q2'24",120,8],["Q3'24",127,7],["Q4'24",134,7],
  ["Q1'25",140,6],["Q2'25",148,8.5],["Q3'25",156,7.5],["Q4'25",164,8],
  ["Q1'26",171,7]
 ];
 // ARR $M (exact where filed; Q4'23 approx from +34% comp)
 const ARR = {"Q4'21":568,"Q1'22":637,"Q2'22":787,"Q3'22":868,"Q4'22":901,"Q1'23":987,"Q2'23":1100,"Q3'23":1218,"Q4'23":1215,"Q1'24":1300,"Q2'24":1500,"Q3'24":1600,"Q4'24":1626,"Q1'25":1713,"Q2'25":1900,"Q3'25":2000,"Q4'25":2047,"Q1'26":2151};
-const ANNUAL = [["2022",22],["2023",27],["2024",28],["2025",30]];
+const ANNUAL = [["2021",17],["2022",23],["2023",27],["2024",28],["2025",30]];
 
 // Enterprise customers: [name, dealLocs, won, status, trend(-1/0/1), trendTxt, note]
 const CUST = [
@@ -432,7 +432,7 @@ new Chart($("#locChart"),{data:{labels:TQ.map(q=>q[0]),datasets:[
  plugins:{legend:{labels:{boxWidth:12}}}}});
 
 const annualChartLabels=[...ANNUAL.map(a=>a[0]),"2026E"];
-const annualChart=new Chart($("#annualChart"),{type:"bar",data:{labels:annualChartLabels,datasets:[{label:"Annual net adds (k)",data:[...ANNUAL.map(a=>a[1]),null],backgroundColor:["#58a6ff66","#58a6ff99","#58a6ffcc","#58a6ff",C.accent]}]},
+const annualChart=new Chart($("#annualChart"),{type:"bar",data:{labels:annualChartLabels,datasets:[{label:"Annual net adds (k)",data:[...ANNUAL.map(a=>a[1]),null],backgroundColor:["#58a6ff44","#58a6ff66","#58a6ff99","#58a6ffcc","#58a6ff",C.accent]}]},
  options:{maintainAspectRatio:false,plugins:{legend:{display:false},annotation:undefined,tooltip:{callbacks:{label:c=>` ${c.parsed.y}k net adds`}}},scales:{y:{title:{display:true,text:"k"},suggestedMax:40}}}});
 
 const arrLabels=Object.keys(ARR);
@@ -522,7 +522,7 @@ function runModel(){
     plugins:{legend:{labels:{boxWidth:12}}}}});
 
   // sync 2026E bar on backdrop tab
-  annualChart.data.datasets[0].data[4]=+(n26/1000).toFixed(1); annualChart.update();
+  annualChart.data.datasets[0].data[ANNUAL.length]=+(n26/1000).toFixed(1); annualChart.update();
 }
 
 /* ================= CUSTOMERS ================= */
