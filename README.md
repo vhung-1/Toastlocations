@@ -1,6 +1,6 @@
 # Toast (TOST) Location Adds Dashboard
 
-A self-contained, single-page dashboard for analyzing **Toast's net location adds** from a long/short equity perspective. Open `index.html` in any browser — no server or internet connection required (Chart.js is vendored in `/vendor`).
+A self-contained, single-page dashboard for analyzing **Toast's net location adds** from a long/short equity perspective. Open `index.html` in any browser — no server or internet connection required — Chart.js is inlined, so the single file is fully portable.
 
 ## Tabs
 
