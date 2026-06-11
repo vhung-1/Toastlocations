@@ -1,0 +1,827 @@
+{
+ "asof": "May 2026",
+ "naics72_ttm": 316120,
+ "naics72_ttm_prior": 278742,
+ "naics72_share_of_total": 0.0531,
+ "us_estabs_q4_2025": 737214,
+ "us_estabs_yoy_chg": 11880,
+ "states": {
+  "AL": {
+   "estabs": 10631,
+   "estabsChg": 455,
+   "estabsPct": 4.5,
+   "appsTTM": 74465,
+   "appsTTMPrior": 60408,
+   "appsYoY": 23.3,
+   "est72Apps": 3955
+  },
+  "AK": {
+   "estabs": 1608,
+   "estabsChg": 28,
+   "estabsPct": 1.8,
+   "appsTTM": 11467,
+   "appsTTMPrior": 9669,
+   "appsYoY": 18.6,
+   "est72Apps": 609
+  },
+  "AZ": {
+   "estabs": 12377,
+   "estabsChg": 76,
+   "estabsPct": 0.6,
+   "appsTTM": 146703,
+   "appsTTMPrior": 121987,
+   "appsYoY": 20.3,
+   "est72Apps": 7791
+  },
+  "AR": {
+   "estabs": 6262,
+   "estabsChg": 355,
+   "estabsPct": 6.0,
+   "appsTTM": 42575,
+   "appsTTMPrior": 36202,
+   "appsYoY": 17.6,
+   "est72Apps": 2261
+  },
+  "CA": {
+   "estabs": 91310,
+   "estabsChg": 3158,
+   "estabsPct": 3.6,
+   "appsTTM": 577564,
+   "appsTTMPrior": 527889,
+   "appsYoY": 9.4,
+   "est72Apps": 30674
+  },
+  "CO": {
+   "estabs": 13226,
+   "estabsChg": 581,
+   "estabsPct": 4.6,
+   "appsTTM": 155962,
+   "appsTTMPrior": 133257,
+   "appsYoY": 17.0,
+   "est72Apps": 8283
+  },
+  "CT": {
+   "estabs": 9099,
+   "estabsChg": -52,
+   "estabsPct": -0.6,
+   "appsTTM": 52679,
+   "appsTTMPrior": 46655,
+   "appsYoY": 12.9,
+   "est72Apps": 2798
+  },
+  "DE": {
+   "estabs": 2377,
+   "estabsChg": 17,
+   "estabsPct": 0.7,
+   "appsTTM": 60441,
+   "appsTTMPrior": 59138,
+   "appsYoY": 2.2,
+   "est72Apps": 3210
+  },
+  "DC": {
+   "estabs": 2699,
+   "estabsChg": 23,
+   "estabsPct": 0.9,
+   "appsTTM": 15359,
+   "appsTTMPrior": 14192,
+   "appsYoY": 8.2,
+   "est72Apps": 816
+  },
+  "FL": {
+   "estabs": 50164,
+   "estabsChg": 965,
+   "estabsPct": 2.0,
+   "appsTTM": 688716,
+   "appsTTMPrior": 621092,
+   "appsYoY": 10.9,
+   "est72Apps": 36577
+  },
+  "GA": {
+   "estabs": 24306,
+   "estabsChg": 292,
+   "estabsPct": 1.2,
+   "appsTTM": 267709,
+   "appsTTMPrior": 236330,
+   "appsYoY": 13.3,
+   "est72Apps": 14218
+  },
+  "HI": {
+   "estabs": 4662,
+   "estabsChg": 189,
+   "estabsPct": 4.2,
+   "appsTTM": 18677,
+   "appsTTMPrior": 18599,
+   "appsYoY": 0.4,
+   "est72Apps": 992
+  },
+  "ID": {
+   "estabs": 4677,
+   "estabsChg": -86,
+   "estabsPct": -1.8,
+   "appsTTM": 35194,
+   "appsTTMPrior": 31633,
+   "appsYoY": 11.3,
+   "est72Apps": 1869
+  },
+  "IL": {
+   "estabs": 27023,
+   "estabsChg": -151,
+   "estabsPct": -0.6,
+   "appsTTM": 194048,
+   "appsTTMPrior": 170200,
+   "appsYoY": 14.0,
+   "est72Apps": 10306
+  },
+  "IN": {
+   "estabs": 13466,
+   "estabsChg": 273,
+   "estabsPct": 2.1,
+   "appsTTM": 94009,
+   "appsTTMPrior": 88181,
+   "appsYoY": 6.6,
+   "est72Apps": 4993
+  },
+  "IA": {
+   "estabs": 6595,
+   "estabsChg": -21,
+   "estabsPct": -0.3,
+   "appsTTM": 36780,
+   "appsTTMPrior": 32420,
+   "appsYoY": 13.4,
+   "est72Apps": 1953
+  },
+  "KS": {
+   "estabs": 5648,
+   "estabsChg": 7,
+   "estabsPct": 0.1,
+   "appsTTM": 40319,
+   "appsTTMPrior": 32426,
+   "appsYoY": 24.3,
+   "est72Apps": 2141
+  },
+  "KY": {
+   "estabs": 9008,
+   "estabsChg": 10,
+   "estabsPct": 0.1,
+   "appsTTM": 72772,
+   "appsTTMPrior": 53072,
+   "appsYoY": 37.1,
+   "est72Apps": 3865
+  },
+  "LA": {
+   "estabs": 11879,
+   "estabsChg": 342,
+   "estabsPct": 3.0,
+   "appsTTM": 78731,
+   "appsTTMPrior": 65424,
+   "appsYoY": 20.3,
+   "est72Apps": 4181
+  },
+  "ME": {
+   "estabs": 3479,
+   "estabsChg": 28,
+   "estabsPct": 0.8,
+   "appsTTM": 14487,
+   "appsTTMPrior": 14330,
+   "appsYoY": 1.1,
+   "est72Apps": 769
+  },
+  "MD": {
+   "estabs": 12033,
+   "estabsChg": 214,
+   "estabsPct": 1.8,
+   "appsTTM": 107704,
+   "appsTTMPrior": 94404,
+   "appsYoY": 14.1,
+   "est72Apps": 5720
+  },
+  "MA": {
+   "estabs": 15652,
+   "estabsChg": 414,
+   "estabsPct": 2.7,
+   "appsTTM": 82928,
+   "appsTTMPrior": 74953,
+   "appsYoY": 10.6,
+   "est72Apps": 4404
+  },
+  "MI": {
+   "estabs": 19521,
+   "estabsChg": 787,
+   "estabsPct": 4.2,
+   "appsTTM": 160059,
+   "appsTTMPrior": 134056,
+   "appsYoY": 19.4,
+   "est72Apps": 8501
+  },
+  "MN": {
+   "estabs": 11388,
+   "estabsChg": 30,
+   "estabsPct": 0.3,
+   "appsTTM": 75488,
+   "appsTTMPrior": 67168,
+   "appsYoY": 12.4,
+   "est72Apps": 4009
+  },
+  "MS": {
+   "estabs": 6270,
+   "estabsChg": 298,
+   "estabsPct": 5.0,
+   "appsTTM": 57228,
+   "appsTTMPrior": 45839,
+   "appsYoY": 24.8,
+   "est72Apps": 3039
+  },
+  "MO": {
+   "estabs": 12817,
+   "estabsChg": 342,
+   "estabsPct": 2.7,
+   "appsTTM": 110444,
+   "appsTTMPrior": 84623,
+   "appsYoY": 30.5,
+   "est72Apps": 5866
+  },
+  "MT": {
+   "estabs": 2976,
+   "estabsChg": -164,
+   "estabsPct": -5.2,
+   "appsTTM": 31398,
+   "appsTTMPrior": 27563,
+   "appsYoY": 13.9,
+   "est72Apps": 1668
+  },
+  "NE": {
+   "estabs": 4471,
+   "estabsChg": 111,
+   "estabsPct": 2.5,
+   "appsTTM": 23753,
+   "appsTTMPrior": 20607,
+   "appsYoY": 15.3,
+   "est72Apps": 1261
+  },
+  "NV": {
+   "estabs": 7226,
+   "estabsChg": 126,
+   "estabsPct": 1.8,
+   "appsTTM": 67680,
+   "appsTTMPrior": 62346,
+   "appsYoY": 8.6,
+   "est72Apps": 3594
+  },
+  "NH": {
+   "estabs": 3435,
+   "estabsChg": 11,
+   "estabsPct": 0.3,
+   "appsTTM": 18485,
+   "appsTTMPrior": 15821,
+   "appsYoY": 16.8,
+   "est72Apps": 982
+  },
+  "NJ": {
+   "estabs": 20890,
+   "estabsChg": 413,
+   "estabsPct": 2.0,
+   "appsTTM": 169079,
+   "appsTTMPrior": 152889,
+   "appsYoY": 10.6,
+   "est72Apps": 8980
+  },
+  "NM": {
+   "estabs": 3706,
+   "estabsChg": 5,
+   "estabsPct": 0.1,
+   "appsTTM": 43277,
+   "appsTTMPrior": 35268,
+   "appsYoY": 22.7,
+   "est72Apps": 2298
+  },
+  "NY": {
+   "estabs": 50498,
+   "estabsChg": -334,
+   "estabsPct": -0.7,
+   "appsTTM": 311909,
+   "appsTTMPrior": 287625,
+   "appsYoY": 8.4,
+   "est72Apps": 16565
+  },
+  "NC": {
+   "estabs": 24715,
+   "estabsChg": 780,
+   "estabsPct": 3.3,
+   "appsTTM": 194207,
+   "appsTTMPrior": 160358,
+   "appsYoY": 21.1,
+   "est72Apps": 10314
+  },
+  "ND": {
+   "estabs": 1844,
+   "estabsChg": 9,
+   "estabsPct": 0.5,
+   "appsTTM": 9497,
+   "appsTTMPrior": 8410,
+   "appsYoY": 12.9,
+   "est72Apps": 504
+  },
+  "OH": {
+   "estabs": 25024,
+   "estabsChg": -118,
+   "estabsPct": -0.5,
+   "appsTTM": 177676,
+   "appsTTMPrior": 144351,
+   "appsYoY": 23.1,
+   "est72Apps": 9436
+  },
+  "OK": {
+   "estabs": 7788,
+   "estabsChg": -4,
+   "estabsPct": -0.1,
+   "appsTTM": 66154,
+   "appsTTMPrior": 53735,
+   "appsYoY": 23.1,
+   "est72Apps": 3513
+  },
+  "OR": {
+   "estabs": 11530,
+   "estabsChg": -249,
+   "estabsPct": -2.1,
+   "appsTTM": 61460,
+   "appsTTMPrior": 65359,
+   "appsYoY": -6.0,
+   "est72Apps": 3264
+  },
+  "PA": {
+   "estabs": 27109,
+   "estabsChg": 517,
+   "estabsPct": 1.9,
+   "appsTTM": 168008,
+   "appsTTMPrior": 143780,
+   "appsYoY": 16.9,
+   "est72Apps": 8923
+  },
+  "RI": {
+   "estabs": 3064,
+   "estabsChg": -19,
+   "estabsPct": -0.6,
+   "appsTTM": 12323,
+   "appsTTMPrior": 11131,
+   "appsYoY": 10.7,
+   "est72Apps": 654
+  },
+  "SC": {
+   "estabs": 11795,
+   "estabsChg": 109,
+   "estabsPct": 0.9,
+   "appsTTM": 99562,
+   "appsTTMPrior": 84923,
+   "appsYoY": 17.2,
+   "est72Apps": 5288
+  },
+  "SD": {
+   "estabs": 2060,
+   "estabsChg": 27,
+   "estabsPct": 1.3,
+   "appsTTM": 12848,
+   "appsTTMPrior": 11464,
+   "appsYoY": 12.1,
+   "est72Apps": 682
+  },
+  "TN": {
+   "estabs": 14142,
+   "estabsChg": -350,
+   "estabsPct": -2.4,
+   "appsTTM": 110566,
+   "appsTTMPrior": 89728,
+   "appsYoY": 23.2,
+   "est72Apps": 5872
+  },
+  "TX": {
+   "estabs": 59412,
+   "estabsChg": 1207,
+   "estabsPct": 2.1,
+   "appsTTM": 570752,
+   "appsTTMPrior": 486973,
+   "appsYoY": 17.2,
+   "est72Apps": 30312
+  },
+  "UT": {
+   "estabs": 6583,
+   "estabsChg": 162,
+   "estabsPct": 2.5,
+   "appsTTM": 80394,
+   "appsTTMPrior": 65218,
+   "appsYoY": 23.3,
+   "est72Apps": 4270
+  },
+  "VT": {
+   "estabs": 1536,
+   "estabsChg": 39,
+   "estabsPct": 2.6,
+   "appsTTM": 8001,
+   "appsTTMPrior": 7370,
+   "appsYoY": 8.6,
+   "est72Apps": 425
+  },
+  "VA": {
+   "estabs": 17549,
+   "estabsChg": 394,
+   "estabsPct": 2.3,
+   "appsTTM": 147995,
+   "appsTTMPrior": 123807,
+   "appsYoY": 19.5,
+   "est72Apps": 7860
+  },
+  "WA": {
+   "estabs": 17089,
+   "estabsChg": 107,
+   "estabsPct": 0.6,
+   "appsTTM": 116872,
+   "appsTTMPrior": 142487,
+   "appsYoY": -18.0,
+   "est72Apps": 6207
+  },
+  "WV": {
+   "estabs": 3487,
+   "estabsChg": -11,
+   "estabsPct": -0.3,
+   "appsTTM": 17905,
+   "appsTTMPrior": 14904,
+   "appsYoY": 20.1,
+   "est72Apps": 951
+  },
+  "WI": {
+   "estabs": 13783,
+   "estabsChg": 169,
+   "estabsPct": 1.2,
+   "appsTTM": 76770,
+   "appsTTMPrior": 61005,
+   "appsYoY": 25.8,
+   "est72Apps": 4077
+  },
+  "WY": {
+   "estabs": 1435,
+   "estabsChg": 33,
+   "estabsPct": 2.4,
+   "appsTTM": 83249,
+   "appsTTMPrior": 68437,
+   "appsYoY": 21.6,
+   "est72Apps": 4421
+  }
+ },
+ "naics72_monthly_sa": [
+  {
+   "date": "2019-01",
+   "value": 14268
+  },
+  {
+   "date": "2019-02",
+   "value": 15204
+  },
+  {
+   "date": "2019-03",
+   "value": 15128
+  },
+  {
+   "date": "2019-04",
+   "value": 15475
+  },
+  {
+   "date": "2019-05",
+   "value": 14935
+  },
+  {
+   "date": "2019-06",
+   "value": 15404
+  },
+  {
+   "date": "2019-07",
+   "value": 15003
+  },
+  {
+   "date": "2019-08",
+   "value": 15625
+  },
+  {
+   "date": "2019-09",
+   "value": 15579
+  },
+  {
+   "date": "2019-10",
+   "value": 15817
+  },
+  {
+   "date": "2019-11",
+   "value": 15783
+  },
+  {
+   "date": "2019-12",
+   "value": 16461
+  },
+  {
+   "date": "2020-01",
+   "value": 15256
+  },
+  {
+   "date": "2020-02",
+   "value": 16657
+  },
+  {
+   "date": "2020-03",
+   "value": 12069
+  },
+  {
+   "date": "2020-04",
+   "value": 9399
+  },
+  {
+   "date": "2020-05",
+   "value": 12387
+  },
+  {
+   "date": "2020-06",
+   "value": 18947
+  },
+  {
+   "date": "2020-07",
+   "value": 30627
+  },
+  {
+   "date": "2020-08",
+   "value": 25274
+  },
+  {
+   "date": "2020-09",
+   "value": 21639
+  },
+  {
+   "date": "2020-10",
+   "value": 20617
+  },
+  {
+   "date": "2020-11",
+   "value": 19919
+  },
+  {
+   "date": "2020-12",
+   "value": 17446
+  },
+  {
+   "date": "2021-01",
+   "value": 26663
+  },
+  {
+   "date": "2021-02",
+   "value": 23636
+  },
+  {
+   "date": "2021-03",
+   "value": 24179
+  },
+  {
+   "date": "2021-04",
+   "value": 30611
+  },
+  {
+   "date": "2021-05",
+   "value": 31624
+  },
+  {
+   "date": "2021-06",
+   "value": 25498
+  },
+  {
+   "date": "2021-07",
+   "value": 24833
+  },
+  {
+   "date": "2021-08",
+   "value": 23364
+  },
+  {
+   "date": "2021-09",
+   "value": 22849
+  },
+  {
+   "date": "2021-10",
+   "value": 22633
+  },
+  {
+   "date": "2021-11",
+   "value": 23577
+  },
+  {
+   "date": "2021-12",
+   "value": 22372
+  },
+  {
+   "date": "2022-01",
+   "value": 22435
+  },
+  {
+   "date": "2022-02",
+   "value": 22161
+  },
+  {
+   "date": "2022-03",
+   "value": 20621
+  },
+  {
+   "date": "2022-04",
+   "value": 25319
+  },
+  {
+   "date": "2022-05",
+   "value": 23552
+  },
+  {
+   "date": "2022-06",
+   "value": 22712
+  },
+  {
+   "date": "2022-07",
+   "value": 23584
+  },
+  {
+   "date": "2022-08",
+   "value": 22957
+  },
+  {
+   "date": "2022-09",
+   "value": 22795
+  },
+  {
+   "date": "2022-10",
+   "value": 23425
+  },
+  {
+   "date": "2022-11",
+   "value": 22682
+  },
+  {
+   "date": "2022-12",
+   "value": 22953
+  },
+  {
+   "date": "2023-01",
+   "value": 24112
+  },
+  {
+   "date": "2023-02",
+   "value": 25569
+  },
+  {
+   "date": "2023-03",
+   "value": 24301
+  },
+  {
+   "date": "2023-04",
+   "value": 24821
+  },
+  {
+   "date": "2023-05",
+   "value": 24713
+  },
+  {
+   "date": "2023-06",
+   "value": 26501
+  },
+  {
+   "date": "2023-07",
+   "value": 27076
+  },
+  {
+   "date": "2023-08",
+   "value": 25644
+  },
+  {
+   "date": "2023-09",
+   "value": 24530
+  },
+  {
+   "date": "2023-10",
+   "value": 23430
+  },
+  {
+   "date": "2023-11",
+   "value": 25779
+  },
+  {
+   "date": "2023-12",
+   "value": 26240
+  },
+  {
+   "date": "2024-01",
+   "value": 26387
+  },
+  {
+   "date": "2024-02",
+   "value": 25438
+  },
+  {
+   "date": "2024-03",
+   "value": 22258
+  },
+  {
+   "date": "2024-04",
+   "value": 22108
+  },
+  {
+   "date": "2024-05",
+   "value": 22182
+  },
+  {
+   "date": "2024-06",
+   "value": 22357
+  },
+  {
+   "date": "2024-07",
+   "value": 22679
+  },
+  {
+   "date": "2024-08",
+   "value": 23492
+  },
+  {
+   "date": "2024-09",
+   "value": 22765
+  },
+  {
+   "date": "2024-10",
+   "value": 22505
+  },
+  {
+   "date": "2024-11",
+   "value": 23802
+  },
+  {
+   "date": "2024-12",
+   "value": 24976
+  },
+  {
+   "date": "2025-01",
+   "value": 21287
+  },
+  {
+   "date": "2025-02",
+   "value": 24140
+  },
+  {
+   "date": "2025-03",
+   "value": 23444
+  },
+  {
+   "date": "2025-04",
+   "value": 23858
+  },
+  {
+   "date": "2025-05",
+   "value": 24361
+  },
+  {
+   "date": "2025-06",
+   "value": 24959
+  },
+  {
+   "date": "2025-07",
+   "value": 25385
+  },
+  {
+   "date": "2025-08",
+   "value": 26083
+  },
+  {
+   "date": "2025-09",
+   "value": 26266
+  },
+  {
+   "date": "2025-10",
+   "value": 26049
+  },
+  {
+   "date": "2025-11",
+   "value": 27001
+  },
+  {
+   "date": "2025-12",
+   "value": 25249
+  },
+  {
+   "date": "2026-01",
+   "value": 26719
+  },
+  {
+   "date": "2026-02",
+   "value": 27777
+  },
+  {
+   "date": "2026-03",
+   "value": 26762
+  },
+  {
+   "date": "2026-04",
+   "value": 27438
+  },
+  {
+   "date": "2026-05",
+   "value": 27946
+  }
+ ]
+}

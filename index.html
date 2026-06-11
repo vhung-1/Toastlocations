@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOST — Toast Location Adds Dashboard</title>
+<script src="vendor/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2d3748;
+    --text:#e6edf3; --muted:#8b949e; --accent:#ff6b35; --accent2:#ffa94d;
+    --green:#3fb950; --red:#f85149; --blue:#58a6ff; --purple:#bc8cff; --yellow:#d29922;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.45}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 20px 60px}
+  header{padding:26px 0 14px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:baseline;gap:14px}
+  header h1{font-size:22px;font-weight:700}
+  header .tick{color:var(--accent);font-weight:800}
+  header .sub{color:var(--muted);font-size:13px}
+  nav{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 22px}
+  nav button{background:var(--panel);border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:600}
+  nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  nav button:hover:not(.active){color:var(--text);border-color:var(--muted)}
+  section.tab{display:none}
+  section.tab.active{display:block}
+  .grid{display:grid;gap:14px}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .card .lbl{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+  .card .val{font-size:23px;font-weight:750}
+  .card .delta{font-size:12.5px;margin-top:3px}
+  .pos{color:var(--green)} .neg{color:var(--red)} .mut{color:var(--muted)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:14px}
+  .panel h2{font-size:15.5px;margin-bottom:4px}
+  .panel .note{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:900px){.cols2{grid-template-columns:1fr}}
+  .chartbox{position:relative;height:340px}
+  .chartbox.tall{height:400px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{color:var(--muted);text-align:right;font-weight:600;padding:7px 8px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  td{padding:6px 8px;text-align:right;border-bottom:1px solid #21293a;white-space:nowrap}
+  tr:hover td{background:#1b2230}
+  .tag{display:inline-block;padding:1.5px 8px;border-radius:10px;font-size:11px;font-weight:700}
+  .tag.live{background:#12351c;color:var(--green)} .tag.roll{background:#10243f;color:var(--blue)}
+  .tag.appr{background:#2d2410;color:var(--yellow)} .tag.lost{background:#3a1416;color:var(--red)}
+  .gpos{color:var(--green);font-weight:600} .gneg{color:var(--red);font-weight:600} .gflat{color:var(--muted)}
+  .ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px 22px;margin:10px 0 6px}
+  .ctrl .c label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:3px}
+  .ctrl .c label b{color:var(--text)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .scen{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .scen button{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:6px 14px;border-radius:7px;cursor:pointer;font-weight:600;font-size:12.5px}
+  .scen button:hover{border-color:var(--accent)}
+  .scen button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .bb{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:900px){.bb{grid-template-columns:1fr}}
+  .bb ul{margin:8px 0 0 18px;font-size:13px}
+  .bb li{margin-bottom:6px}
+  .bb h3{font-size:14px}
+  .map{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;max-width:760px}
+  .st{aspect-ratio:1;border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:default;position:relative;color:#fff}
+  .st small{font-size:9px;font-weight:500;opacity:.9}
+  .st .tip{display:none;position:absolute;bottom:105%;left:50%;transform:translateX(-50%);background:#000;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:11.5px;font-weight:500;width:215px;z-index:10;text-align:left;color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,.5)}
+  .st:hover .tip{display:block}
+  .legend{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);margin:10px 0}
+  .legend .sw{width:26px;height:12px;border-radius:3px}
+  .seltog{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .seltog button{background:var(--panel2);border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600}
+  .seltog button.on{color:#fff;background:#2a3550;border-color:var(--blue)}
+  .src{color:var(--muted);font-size:11.5px;margin-top:10px;line-height:1.6}
+  .src a{color:var(--blue);text-decoration:none}
+  .flag{color:var(--yellow)}
+  .big{font-size:15px;line-height:1.6}
+  .callout{border-left:3px solid var(--accent);background:var(--panel2);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1><span class="tick">TOST</span> · Toast Location Adds — Backdrop, Customers &amp; Forecast</h1>
+  <span class="sub">L/S equity workbench · data through Q1 2026 (reported May 7, 2026) · Census BFS thru May 2026 · BLS QCEW thru Q4 2025 · built June 11, 2026</span>
+</header>
+
+<nav id="nav">
+  <button data-tab="overview" class="active">Overview</button>
+  <button data-tab="backdrop">Net Adds Backdrop</button>
+  <button data-tab="forecast">Forecast Tool</button>
+  <button data-tab="customers">Biggest Customers</button>
+  <button data-tab="states">State Formation Map</button>
+</nav>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="tab active" id="overview">
+  <div class="grid kpis">
+    <div class="card"><div class="lbl">Live Locations (Q1'26)</div><div class="val">~171,000</div><div class="delta pos">+22% y/y · +7,000 net in Q1</div></div>
+    <div class="card"><div class="lbl">FY2025 Net Adds</div><div class="val">30,000</div><div class="delta pos">Record · 3rd straight record yr</div></div>
+    <div class="card"><div class="lbl">ARR (Q1'26, exact)</div><div class="val">$2,151M</div><div class="delta pos">+26% y/y</div></div>
+    <div class="card"><div class="lbl">ARR / Location</div><div class="val">~$12.6k</div><div class="delta mut">vs ~$10.0k Q4'21</div></div>
+    <div class="card"><div class="lbl">GPV (TTM)</div><div class="val">$204B</div><div class="delta mut">Monetization 103bps — first &gt;1%</div></div>
+    <div class="card"><div class="lbl">US SMB/Mid-Mkt Share</div><div class="val">~20%</div><div class="delta mut">"nearly doubled in 3 yrs" (mgmt)</div></div>
+    <div class="card"><div class="lbl">NAICS-72 Biz Apps (TTM)</div><div class="val">316k</div><div class="delta pos">+13.4% y/y — record highs</div></div>
+    <div class="card"><div class="lbl">Street (June '26)</div><div class="val">~$36 PT</div><div class="delta mut">19 Buy/OP · 10 Hold · stock ~$28</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>The one-paragraph setup</h2>
+    <p class="big">Toast added a record <b>30,000 net locations in 2025</b> (vs 28k '24, 27k '23, 22k '22) and guided to <b>another record in 2026</b>; Q1'26 came in at ~7,000 vs ~6,000 a year ago. The core US SMB engine is mature-but-steady (~20% share, management says core adds stay "in a similar range"), so the <b>incremental net-adds story is now enterprise rollouts (Applebee's, Firehouse Subs, Papa Murphy's, Topgolf, TGI Fridays), international (4 countries) and F&amp;B retail</b> — a bucket that crossed 10k locations and ~$100M ARR in 2025 and doubled y/y. The industry backdrop is unusually supportive of the funnel: restaurant business applications are at <b>record highs (+13% TTM)</b> while net establishment growth is only +1.6% — Toast's adds are share-capture of gross openings plus legacy-POS conversions, not a bet on industry expansion. Watch-items for the short side: GPV/location −1% y/y, enterprise ARPU dilution, soft restaurant traffic (8 straight months of net decline), chain closure wave (Wendy's, Pizza Hut, Papa John's), and a 150bps hardware-cost headwind.</p>
+  </div>
+
+  <div class="panel bb">
+    <div>
+      <h3 class="pos">▲ Bull case (long)</h3>
+      <ul>
+        <li><b>Net-adds momentum:</b> every quarter of 2025 beat its year-ago comp; 2026 guided to a 4th straight record. Q1'26 +7k vs +6k LY annualizes to ~33k.</li>
+        <li><b>Leading indicator inflecting:</b> NAICS-72 business applications +12% YTD, record monthly highs Jan–May '26 — new restaurants overwhelmingly pick cloud POS, where Toast claims rising win rates vs every major competitor.</li>
+        <li><b>Enterprise flywheel just starting:</b> two largest-ever signings (Applebee's, Firehouse) still rolling out; "booked more locations in Q1'26 than total customers in 2023"; drive-thru product opens ~140k-location QSR TAM.</li>
+        <li><b>Competition stumbling:</b> Fiserv/Clover guidance cut (Oct '25, −40% day), Olo taken private, NCR/Micros legacy base (~45% of market) is the share-donor pool.</li>
+        <li><b>Monetization compounding:</b> ARR/location $10.0k→$12.6k since '21; take rate crossed 1% of GPV; FY26 FCF consensus ~$714M.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="neg">▼ Bear case (short)</h3>
+      <ul>
+        <li><b>Core is flat:</b> mgmt admits core SMB adds are "in the same range" — all growth now from lower-ARPU new TAMs; UBS flags enterprise as dilutive to front-book ARPU; GPV/location −1% y/y.</li>
+        <li><b>End-market deteriorating:</b> operator traffic down 8 straight months; 2026 closure wave (Wendy's ~300+, Pizza Hut 250, Papa John's 200); franchisee distress = churn risk in the base.</li>
+        <li><b>Enterprise math is small &amp; shrinking hosts:</b> identifiable chain deals ≈ 7–8k locations (~4–5% of base); flagship Applebee's is net-closing (−35/yr); QSR mega-chains locked up by PAR (Burger King), Qu (GoTo Foods, Jack in the Box), NCR (Wendy's).</li>
+        <li><b>Decel + margin pressure:</b> ARR growth 26% and fading ~4-5pts/yr; 150bps memory-chip hardware headwind; Mizuho cut PT to $38 on margins (May '26).</li>
+        <li><b>Law of large numbers:</b> 30k adds on 731k US establishments growing +11.5k/yr — Toast already captures &gt;2.5x industry net growth; every incremental point of share is harder.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Consensus &amp; guidance anchor (S&amp;P Capital IQ, June 10–11, 2026)</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th><th>FY2028E</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td>$6.15B</td><td>$7.39B (+20%)</td><td>$8.72B (+18%)</td><td>$10.18B (+17%)</td></tr>
+        <tr><td>Adj. EBITDA</td><td>~$640M</td><td>$808M (guide $790–810M)</td><td>$1,036M</td><td>$1,348M</td></tr>
+        <tr><td>FCF</td><td>—</td><td>$714M</td><td>$926M</td><td>$1,266M</td></tr>
+        <tr><td>EPS (normalized)</td><td>—</td><td>$1.34</td><td>$1.70</td><td>$2.20</td></tr>
+        <tr><td>Net location adds</td><td>30,000 (record)</td><td colspan="3">No published street figure — mgmt guided "another year of record net adds" (&gt;30k); FY26 recurring GP guide $2,290–2,320M (+21–23%)</td></tr>
+      </tbody>
+    </table>
+    <div class="src">Sources: S&amp;P Capital IQ consensus pulled June 11, 2026; Toast Q1'26 8-K (guidance raised May 7, 2026). FY25 EBITDA shown approximate.</div>
+  </div>
+</section>
+
+<!-- ============ BACKDROP ============ -->
+<section class="tab" id="backdrop">
+  <div class="panel">
+    <h2>Toast quarterly locations &amp; net adds</h2>
+    <div class="note">Company-disclosed "approximately X" figures from 8-K press releases (CIK 1650164). Net adds marked with * are differences of rounded figures (±1k). Q1 is seasonally the lightest quarter.</div>
+    <div class="chartbox tall"><canvas id="locChart"></canvas></div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>Annual net adds — the record streak</h2>
+      <div class="note">FY26E bar reflects whatever scenario is set in the Forecast tab (default: Base).</div>
+      <div class="chartbox"><canvas id="annualChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>ARR &amp; ARR per location</h2>
+      <div class="note">ARR exact where filed (10-K/10-Q), else company-rounded. ARR/location = ARR ÷ locations. Q4'23 ARR approximated from the +34% y/y comp [E].</div>
+      <div class="chartbox"><canvas id="arrChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>Leading indicator: restaurant business applications (US, NAICS 72, SA)</h2>
+      <div class="note">Census Business Formation Statistics, monthly, seasonally adjusted, computed from the raw bfs_monthly.csv. Applications bottomed mid-2024 (~22k/mo) and have printed record highs every month Jan–May 2026.</div>
+      <div class="chartbox"><canvas id="bfsChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Toast adds vs industry net growth (2025)</h2>
+      <div class="note">BLS QCEW: US restaurant establishments (NAICS 722) grew +11.5k (+1.6%) y/y to 731k in Q4'25. Toast added 30k — ~2.6x the entire industry's net growth. Toast's adds = gross-openings capture + conversions of existing locations, not industry expansion.</div>
+      <div class="chartbox"><canvas id="indChart"></canvas></div>
+      <div class="callout">Funnel math: ~316k NAICS-72 applications TTM (+13%) → high-propensity subset becomes actual openings → new restaurants disproportionately choose cloud POS (Toast claims ~20% SMB share and rising win rates). Gross openings, not net industry growth, drive Toast's gross adds.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Penetration &amp; TAM ladder</h2>
+    <table>
+      <thead><tr><th>Layer</th><th>Locations</th><th>Toast today</th><th>Penetration</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>US SMB/mid-market restaurants (core)</td><td>~600k</td><td>~155–160k [E]</td><td>~20% (mgmt, Q4'25)</td><td>Investor Day '24 / Q4'25 call</td></tr>
+        <tr><td>US restaurant locations (total)</td><td>~875k</td><td>~165k US [E]</td><td>~19%</td><td>Investor Day '24</td></tr>
+        <tr><td>+ Drive-thru QSR (new product, Apr '26)</td><td>+140k</td><td>~0</td><td>—</td><td>Q1'26 call</td></tr>
+        <tr><td>Global TAM incl. int'l + F&amp;B retail</td><td>~1.4M</td><td>171k</td><td>~12% ("only 10%" — CFO Q1'25)</td><td>Investor Day '24 (secondary) <span class="flag">[flag]</span></td></tr>
+        <tr><td>Mgmt north star</td><td>"500k locations and beyond" · "$5B then $10B ARR over the next decade"</td><td colspan="3">Q3'25/Q4'25 prepared remarks</td></tr>
+      </tbody>
+    </table>
+    <div class="src">US employer restaurant establishments (QCEW NAICS 722): 731k — Toast's 875k TAM also counts non-employer outlets. International live locations were ~2k at the May-2024 Investor Day (secondary source). <span class="flag">[flag]</span> = could not verify against primary deck.</div>
+  </div>
+</section>
+
+<!-- ============ FORECAST ============ -->
+<section class="tab" id="forecast">
+  <div class="panel">
+    <h2>Net location adds forecast model — 2026E–2030E</h2>
+    <div class="note">Driver-based: net adds = core SMB (with annual fade) + enterprise rollouts + international + F&amp;B retail − churn shock on the installed base. Calibrated so Base ≈ management's "another record year" for 2026. Q1'26 actual (+7,000) is locked in; the model spreads the remaining year over Q2–Q4 using historical seasonality (Q1 ≈ 21% of the year).</div>
+    <div class="scen" id="scen">
+      <button data-s="bear">🐻 Bear</button>
+      <button data-s="base" class="on">⚖️ Base</button>
+      <button data-s="bull">🐂 Bull</button>
+      <button data-s="mgmt">🏢 Mgmt narrative</button>
+    </div>
+    <div class="ctrl">
+      <div class="c"><label>Core SMB net adds, 2026 <b id="v_core"></b></label><input type="range" id="s_core" min="15000" max="35000" step="500"></div>
+      <div class="c"><label>Core annual fade (saturation) <b id="v_fade"></b></label><input type="range" id="s_fade" min="-20" max="5" step="1"></div>
+      <div class="c"><label>Enterprise adds, 2026 <b id="v_ent"></b></label><input type="range" id="s_ent" min="0" max="10000" step="250"></div>
+      <div class="c"><label>Enterprise trajectory after '26 <b id="v_entg"></b></label><input type="range" id="s_entg" min="-50" max="30" step="5"></div>
+      <div class="c"><label>International adds, 2026 <b id="v_intl"></b></label><input type="range" id="s_intl" min="0" max="5000" step="100"></div>
+      <div class="c"><label>Int'l growth /yr <b id="v_intlg"></b></label><input type="range" id="s_intlg" min="0" max="60" step="5"></div>
+      <div class="c"><label>F&amp;B retail adds, 2026 <b id="v_ret"></b></label><input type="range" id="s_ret" min="0" max="5000" step="100"></div>
+      <div class="c"><label>Retail growth /yr <b id="v_retg"></b></label><input type="range" id="s_retg" min="0" max="80" step="5"></div>
+      <div class="c"><label>Churn shock (% of base /yr) <b id="v_churn"></b></label><input type="range" id="s_churn" min="0" max="2" step="0.1"></div>
+      <div class="c"><label>ARR per location growth /yr <b id="v_arpu"></b></label><input type="range" id="s_arpu" min="0" max="8" step="0.5"></div>
+    </div>
+    <div class="chartbox tall"><canvas id="fcChart"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <h2 id="fcVerdict"></h2>
+    <table id="fcTable"></table>
+    <div class="src">Implied ARR = ending locations × ARR/location (Q4'25 base $12.5k, grown at the ARPU slider). It is a sanity proxy, not a revenue model — consensus FY26 revenue $7.39B includes ~75% pass-through fintech costs; map ARR to the recurring-gross-profit guide ($2,290–2,320M FY26) for the cleaner check. US SMB penetration uses the ~600k core TAM and assumes ~88% of Toast locations are US core [E].</div>
+  </div>
+
+  <div class="panel">
+    <h2>What each scenario means (positioning translation)</h2>
+    <table>
+      <thead><tr><th>Scenario</th><th>2026E adds</th><th>Story</th><th>Trade implication</th></tr></thead>
+      <tbody>
+        <tr><td>🐻 Bear</td><td>~26k</td><td>Core fades hard with traffic recession + closures; enterprise pipeline stalls after Applebee's/Firehouse digest; "record" guide missed</td><td>Guide-down on net adds = multiple de-rating; short works</td></tr>
+        <tr><td>⚖️ Base</td><td>~33k</td><td>Core flat-ish per mgmt, enterprise rollouts land, new TAMs compound; record met with modest cushion</td><td>In-line; stock tracks recurring GP execution</td></tr>
+        <tr><td>🐂 Bull</td><td>~37k</td><td>BFS application boom converts, drive-thru opens QSR, win rates vs weakened Clover compound</td><td>Net-adds beat + ARPU mix holds = estimates up, long works</td></tr>
+        <tr><td>🏢 Mgmt</td><td>~32k+</td><td>"Another year of record net adds, core in similar range, new TAMs grow further" — taken literally</td><td>The bar the prints get judged against each quarter</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ CUSTOMERS ============ -->
+<section class="tab" id="customers">
+  <div class="panel">
+    <h2>Biggest customers: deal size vs whether the host chain is growing</h2>
+    <div class="note">The L/S question: Toast's enterprise adds are one-time installs — the <i>recurring</i> kicker only comes if the chain itself opens units. Green = chain net-opening, gray = flat, red = chain net-closing.</div>
+    <div class="chartbox tall"><canvas id="custChart"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <h2>Enterprise book detail</h2>
+    <table id="custTable">
+      <thead><tr><th>Customer</th><th>Deal locations</th><th>Won</th><th>Status</th><th>Chain unit trend (net/yr)</th><th>Note</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="src">Sources: Toast/partner press releases (Business Wire), Toast 8-K shareholder letters &amp; earnings calls, Dine Brands/Hilton/Marriott/Choice FY2025 releases, Franchise Times, RaceTrac/Potbelly 8-K. [E] = estimate, not company-disclosed. Hotel deals are approvals/brand-standards — adoption is property-by-property, counts undisclosed.</div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>Churn &amp; competitive map</h2>
+      <ul style="margin-left:18px;font-size:13px">
+        <li style="margin-bottom:8px"><span class="tag lost">LOST</span> <b>Jamba (GoTo Foods)</b> — the only documented enterprise loss. Toast declined renewal in 2020; transition completed ~2022–23; GoTo Foods standardized ~1,500 locations across 7 brands on <b>Qu</b>. Jamba units ~flat/−0.4%.</li>
+        <li style="margin-bottom:8px"><b>Locked-up QSR tier (not Toast's):</b> Burger King → PAR (exclusive, Oct '23); Jack in the Box &amp; Dave's Hot Chicken → Qu; Wendy's → NCR Aloha. Firehouse Subs is notable precisely because parent RBI's Burger King is PAR-exclusive.</li>
+        <li style="margin-bottom:8px"><b>NCR Voyix</b> claims #1 in new restaurant deployments (Datos, Dec '25); <b>SpotOn</b> undercutting on price; <b>Square</b> still the broad-SMB share leader. Toast counter: drive-thru product launched Apr '26 ("opens ~140k locations").</li>
+        <li><b>Retention disclosure:</b> no churn rate published; SaaS NRR 109% (2025); enterprise churn described only qualitatively as "low".</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>How much do enterprise wins actually move net adds?</h2>
+      <ul style="margin-left:18px;font-size:13px">
+        <li style="margin-bottom:8px">Identifiable named-chain deals sum to roughly <b>7–8k locations ≈ 4–5% of the 171k base</b> [E]. The combined enterprise + international + retail bucket crossed <b>10k locations (~6–7%)</b> and <b>~$100M ARR (~5%)</b> in 2025, doubling y/y.</li>
+        <li style="margin-bottom:8px">Mgmt (Q4'25): 2025's record was <b>core "in the same range" + new TAMs providing the increment</b> — i.e., ~28k core + ~2k new-TAM. Same pattern guided for 2026.</li>
+        <li style="margin-bottom:8px">In-flight rollouts that land in 2026 net adds: Applebee's (~1.5k), Firehouse (~1.3k), Papa Murphy's (~1.0k), Topgolf (full by end Q2'26), TGI Fridays, Hungry Howie's (~0.5k), Teriyaki Madness (0.2k) → <b>~3–4k cumulative</b> [E].</li>
+        <li>Hosts' organic growth skews <i>negative</i> at the biggest deal (Applebee's −35/yr) but positive at Nothing Bundt Cakes (+100/yr), Potbelly (+31 in '25, 2,000-shop target under RaceTrac), and the hotel systems (Hilton NUG +6.7%, Marriott +4.3%).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATES ============ -->
+<section class="tab" id="states">
+  <div class="panel">
+    <h2>New restaurant formation by state</h2>
+    <div class="note">Two lenses: <b>BLS QCEW</b> = actual count of restaurant establishments (NAICS 722, employer firms, Q4'25 vs Q4'24) — the realized net result. <b>Census BFS</b> = business applications (TTM through May '26) — the forward funnel. State-level NAICS-72 applications are estimated by applying the national 5.31% share to each state's total applications [E].</div>
+    <div class="seltog" id="mapTog">
+      <button data-m="estabsPct" class="on">Restaurant estab. growth % (QCEW)</button>
+      <button data-m="estabs">Restaurant count (QCEW)</button>
+      <button data-m="appsYoY">Biz applications y/y % (BFS)</button>
+      <button data-m="est72Apps">Est. restaurant apps TTM [E]</button>
+    </div>
+    <div class="map" id="map"></div>
+    <div class="legend" id="legend"></div>
+    <div class="callout" id="mapInsight"></div>
+  </div>
+
+  <div class="panel">
+    <h2>State table — click headers to sort</h2>
+    <table id="stTable">
+      <thead><tr>
+        <th data-k="st">State</th><th data-k="estabs">Estabs Q4'25</th><th data-k="estabsChg">Δ y/y</th><th data-k="estabsPct">Δ y/y %</th>
+        <th data-k="appsTTM">Total biz apps TTM</th><th data-k="appsYoY">Apps y/y %</th><th data-k="est72Apps">Est. NAICS-72 apps [E]</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="src">Computed from raw files: BLS QCEW <a href="https://data.bls.gov/cew/data/api/2025/4/industry/722.csv">2025Q4</a>/<a href="https://data.bls.gov/cew/data/api/2024/4/industry/722.csv">2024Q4</a> NAICS 722 private establishments; Census <a href="https://www.census.gov/econ/bfs/csv/bfs_monthly.csv">BFS monthly</a> (BA_BA, NSA, TTM Jun'25–May'26 vs prior). Caveats: WA's application decline laps an anomalous prior-year spike; WY/DE totals inflated by registered-agent LLC formation; QCEW counts can shift on administrative reclassification (CA's +3.6% worth sanity-checking); applications ≠ openings.</div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>Reading it for TOST</h2>
+      <ul style="margin-left:18px;font-size:13px">
+        <li style="margin-bottom:7px"><b>The funnel is national and accelerating:</b> 316k restaurant-sector applications TTM (+13.4%), record monthly highs all of 2026 YTD. This is the single best public leading indicator for Toast's gross adds.</li>
+        <li style="margin-bottom:7px"><b>Sun-belt application growth</b> (TX +17%, NC +21%, AZ +20%, GA +13%, TN +23%) keeps the new-restaurant mix in markets where cloud POS is default and Toast claims share gains in "all top-100 SMB markets."</li>
+        <li style="margin-bottom:7px"><b>Counter-narrative check:</b> realized establishment counts show CA fastest among mega-states (+3.6%) and TN shrinking (−2.4%) — formation hype ≠ net openings; conversions of the existing 731k base matter more to Toast than net industry growth.</li>
+        <li><b>Shrinking-state risk is small:</b> states with negative establishment growth (MT, TN, OR, ID, NY, IL, OH...) sum to a tiny net decline; churn pressure on Toast's base from closures is diffuse, concentrated instead in legacy-POS QSR franchise systems (Wendy's/Pizza Hut/Papa John's 2026 closures).</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>National industry dashboard</h2>
+      <table>
+        <tbody>
+          <tr><td>US restaurant establishments (QCEW Q4'25)</td><td><b>731,324</b> (+11,544 / +1.6% y/y)</td></tr>
+          <tr><td>NAICS-72 applications, CY25 / TTM May'26</td><td><b>300k / 316k</b> (+7.4% / +13.4%)</td></tr>
+          <tr><td>2026 announced chain closures</td><td>Wendy's ~300–360 · Pizza Hut 250 · Papa John's 200 · Noodles 30–35</td></tr>
+          <tr><td>Operator traffic (NRA)</td><td>52% report lower y/y traffic (Sep '25) — 8th straight month of net decline</td></tr>
+          <tr><td>NRA 2026 forecast</td><td>Sales $1.55T (+1.3% real), employment 15.8M (+100k)</td></tr>
+          <tr><td>Read</td><td>Soft demand + positive net formation = correction among weak operators, not contraction</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="src" style="margin-top:26px">
+  <b>Sources &amp; integrity notes:</b> Toast location/ARR/GPV history verified against SEC 8-K Ex-99.1 press releases and 10-K/10-Q filings (CIK 1650164); enterprise wins from Toast/partner press releases and earnings transcripts; chain unit counts from Dine Brands, Hilton, Marriott, Choice, Topgolf/Callaway filings, Franchise Times and trade press; consensus from S&amp;P Capital IQ (June 11, 2026); state data computed from raw BLS QCEW and Census BFS files (in <code>/data</code>). Quarterly net adds derived from company-rounded "~X,000" disclosures carry ±1k error. Items marked [E] are estimates; <span class="flag">[flag]</span> items could not be verified against a primary source. Q1'21/Q3'21 locations were never disclosed by the company. Nothing here is investment advice.
+</div>
+
+</div>
+
+<script>
+/* ================= DATA ================= */
+// Toast quarterly: [label, totalLocations, netAdds, exact?]  (locations in thousands)
+const TQ = [
+ ["Q4'21",57,null],["Q1'22",62,5],["Q2'22",68,6],["Q3'22",74,6],["Q4'22",79,5],
+ ["Q1'23",85,5.5],["Q2'23",93,7.5],["Q3'23",99,6.5],["Q4'23",106,7],
+ ["Q1'24",112,6],["Q2'24",120,8],["Q3'24",127,7],["Q4'24",134,7],
+ ["Q1'25",140,6],["Q2'25",148,8.5],["Q3'25",156,7.5],["Q4'25",164,8],
+ ["Q1'26",171,7]
+];
+// ARR $M (exact where filed; Q4'23 approx from +34% comp)
+const ARR = {"Q4'21":568,"Q1'22":637,"Q2'22":787,"Q3'22":868,"Q4'22":901,"Q1'23":987,"Q2'23":1100,"Q3'23":1218,"Q4'23":1215,"Q1'24":1300,"Q2'24":1500,"Q3'24":1600,"Q4'24":1626,"Q1'25":1713,"Q2'25":1900,"Q3'25":2000,"Q4'25":2047,"Q1'26":2151};
+const ANNUAL = [["2022",22],["2023",27],["2024",28],["2025",30]];
+
+// Enterprise customers: [name, dealLocs, won, status, trend(-1/0/1), trendTxt, note]
+const CUST = [
+ ["Applebee's (Dine Brands)",1500,"Apr 2025","roll",-1,"−35/yr; '26 guide −5 to −15 + 50 dual-brand","Largest deal in company history; replaced ~20-yr-old legacy POS"],
+ ["Firehouse Subs (RBI)",1300,"2025","roll",1,"~+3%/yr [E]","2nd-largest 2025 signing; RBI's Burger King is PAR-exclusive"],
+ ["Papa Murphy's (MTY)",1000,"Q4 2025","roll",-1,"slightly net-closing [E]","Expands MTY relationship (Wetzel's, BBQ Holdings)"],
+ ["Nothing Bundt Cakes",800,"2019 (pre-window)","live",1,"~+100/yr (+15%); 1,000th by 2027","Best organic-growth feeder on the platform"],
+ ["Caribou Coffee",500,"Feb 2024","live",0,"~flat US (~500)","Panera Brands exploring ~$1.5B sale — ownership/POS overhang"],
+ ["Hungry Howie's",500,"May 2026","roll",0,"~flat [E]","500 locations, 18 states"],
+ ["Perkins + Huddle House (Ascent)",500,"Feb 2025","roll",0,"~flat [E]","Largest full-service deal at signing"],
+ ["Potbelly (RaceTrac)",445,"2024","live",1,"+31 opened '25; 50 planned '26; 2,000 target","Acquired by RaceTrac Oct '25"],
+ ["Teriyaki Madness",200,"Mar 2026","roll",1,"growing","200+ US locations"],
+ ["Nordstrom (dining)",200,"Q3 2025","roll",0,"n/a (retail F&B)","~200 dining outlets across ~100 stores"],
+ ["Topgolf",100,"May 2025","roll",1,"+5–6 venues/yr (slowed; PE-owned)","Full implementation targeted end Q2'26; huge GPV/venue"],
+ ["TGI Fridays",90,"Nov 2025","roll",1,"post-Ch.11 rebuild; 600+ new by 2030 (aspirational)","US footprint only ~85–100 units today [E]"],
+ ["everbowl",100,"Nov 2025","roll",1,"growing","100+ locations, 27 states"],
+ ["Ike's Love & Sandwiches",100,"Apr 2026","roll",1,"growing","POS + kiosks"],
+ ["Craveworthy Brands",93,"Dec 2023","live",1,"growing","Multi-brand group"],
+ ["Mendocino Farms",70,"Q4 2024","live",1,"growing","CA fast-casual"],
+ ["Marriott select-service",null,"Jun 2023","appr",1,"NRG +4.3% ('25)","Approved vendor, 5 brands US/CA — property-by-property"],
+ ["Hilton",null,"Q4 2024","appr",1,"NUG +6.7% ('25)","Approved F&B POS provider — no count disclosed"],
+ ["Choice (Cambria/Radisson)",null,"Feb 2024","live",0,"system ~flat","Brand standard; deadlines passed → essentially deployed"],
+ ["Preferred Hotels & Resorts",null,"May 2026","appr",1,"625+ hotels, 80 countries","Alliance/recommended provider"],
+ ["Jamba (GoTo Foods)",-788,"LOST '22–23","lost",0,"−0.4% units","Only documented enterprise loss → Qu (~1,500 GoTo locations)"]
+];
+
+const STATE_DATA = {"asof":"May 2026","states":{"AL":{"estabs":10631,"estabsChg":455,"estabsPct":4.5,"appsTTM":74465,"appsTTMPrior":60408,"appsYoY":23.3,"est72Apps":3955},"AK":{"estabs":1608,"estabsChg":28,"estabsPct":1.8,"appsTTM":11467,"appsTTMPrior":9669,"appsYoY":18.6,"est72Apps":609},"AZ":{"estabs":12377,"estabsChg":76,"estabsPct":0.6,"appsTTM":146703,"appsTTMPrior":121987,"appsYoY":20.3,"est72Apps":7791},"AR":{"estabs":6262,"estabsChg":355,"estabsPct":6.0,"appsTTM":42575,"appsTTMPrior":36202,"appsYoY":17.6,"est72Apps":2261},"CA":{"estabs":91310,"estabsChg":3158,"estabsPct":3.6,"appsTTM":577564,"appsTTMPrior":527889,"appsYoY":9.4,"est72Apps":30674},"CO":{"estabs":13226,"estabsChg":581,"estabsPct":4.6,"appsTTM":155962,"appsTTMPrior":133257,"appsYoY":17.0,"est72Apps":8283},"CT":{"estabs":9099,"estabsChg":-52,"estabsPct":-0.6,"appsTTM":52679,"appsTTMPrior":46655,"appsYoY":12.9,"est72Apps":2798},"DE":{"estabs":2377,"estabsChg":17,"estabsPct":0.7,"appsTTM":60441,"appsTTMPrior":59138,"appsYoY":2.2,"est72Apps":3210},"DC":{"estabs":2699,"estabsChg":23,"estabsPct":0.9,"appsTTM":15359,"appsTTMPrior":14192,"appsYoY":8.2,"est72Apps":816},"FL":{"estabs":50164,"estabsChg":965,"estabsPct":2.0,"appsTTM":688716,"appsTTMPrior":621092,"appsYoY":10.9,"est72Apps":36577},"GA":{"estabs":24306,"estabsChg":292,"estabsPct":1.2,"appsTTM":267709,"appsTTMPrior":236330,"appsYoY":13.3,"est72Apps":14218},"HI":{"estabs":4662,"estabsChg":189,"estabsPct":4.2,"appsTTM":18677,"appsTTMPrior":18599,"appsYoY":0.4,"est72Apps":992},"ID":{"estabs":4677,"estabsChg":-86,"estabsPct":-1.8,"appsTTM":35194,"appsTTMPrior":31633,"appsYoY":11.3,"est72Apps":1869},"IL":{"estabs":27023,"estabsChg":-151,"estabsPct":-0.6,"appsTTM":194048,"appsTTMPrior":170200,"appsYoY":14.0,"est72Apps":10306},"IN":{"estabs":13466,"estabsChg":273,"estabsPct":2.1,"appsTTM":94009,"appsTTMPrior":88181,"appsYoY":6.6,"est72Apps":4993},"IA":{"estabs":6595,"estabsChg":-21,"estabsPct":-0.3,"appsTTM":36780,"appsTTMPrior":32420,"appsYoY":13.4,"est72Apps":1953},"KS":{"estabs":5648,"estabsChg":7,"estabsPct":0.1,"appsTTM":40319,"appsTTMPrior":32426,"appsYoY":24.3,"est72Apps":2141},"KY":{"estabs":9008,"estabsChg":10,"estabsPct":0.1,"appsTTM":72772,"appsTTMPrior":53072,"appsYoY":37.1,"est72Apps":3865},"LA":{"estabs":11879,"estabsChg":342,"estabsPct":3.0,"appsTTM":78731,"appsTTMPrior":65424,"appsYoY":20.3,"est72Apps":4181},"ME":{"estabs":3479,"estabsChg":28,"estabsPct":0.8,"appsTTM":14487,"appsTTMPrior":14330,"appsYoY":1.1,"est72Apps":769},"MD":{"estabs":12033,"estabsChg":214,"estabsPct":1.8,"appsTTM":107704,"appsTTMPrior":94404,"appsYoY":14.1,"est72Apps":5720},"MA":{"estabs":15652,"estabsChg":414,"estabsPct":2.7,"appsTTM":82928,"appsTTMPrior":74953,"appsYoY":10.6,"est72Apps":4404},"MI":{"estabs":19521,"estabsChg":787,"estabsPct":4.2,"appsTTM":160059,"appsTTMPrior":134056,"appsYoY":19.4,"est72Apps":8501},"MN":{"estabs":11388,"estabsChg":30,"estabsPct":0.3,"appsTTM":75488,"appsTTMPrior":67168,"appsYoY":12.4,"est72Apps":4009},"MS":{"estabs":6270,"estabsChg":298,"estabsPct":5.0,"appsTTM":57228,"appsTTMPrior":45839,"appsYoY":24.8,"est72Apps":3039},"MO":{"estabs":12817,"estabsChg":342,"estabsPct":2.7,"appsTTM":110444,"appsTTMPrior":84623,"appsYoY":30.5,"est72Apps":5866},"MT":{"estabs":2976,"estabsChg":-164,"estabsPct":-5.2,"appsTTM":31398,"appsTTMPrior":27563,"appsYoY":13.9,"est72Apps":1668},"NE":{"estabs":4471,"estabsChg":111,"estabsPct":2.5,"appsTTM":23753,"appsTTMPrior":20607,"appsYoY":15.3,"est72Apps":1261},"NV":{"estabs":7226,"estabsChg":126,"estabsPct":1.8,"appsTTM":67680,"appsTTMPrior":62346,"appsYoY":8.6,"est72Apps":3594},"NH":{"estabs":3435,"estabsChg":11,"estabsPct":0.3,"appsTTM":18485,"appsTTMPrior":15821,"appsYoY":16.8,"est72Apps":982},"NJ":{"estabs":20890,"estabsChg":413,"estabsPct":2.0,"appsTTM":169079,"appsTTMPrior":152889,"appsYoY":10.6,"est72Apps":8980},"NM":{"estabs":3706,"estabsChg":5,"estabsPct":0.1,"appsTTM":43277,"appsTTMPrior":35268,"appsYoY":22.7,"est72Apps":2298},"NY":{"estabs":50498,"estabsChg":-334,"estabsPct":-0.7,"appsTTM":311909,"appsTTMPrior":287625,"appsYoY":8.4,"est72Apps":16565},"NC":{"estabs":24715,"estabsChg":780,"estabsPct":3.3,"appsTTM":194207,"appsTTMPrior":160358,"appsYoY":21.1,"est72Apps":10314},"ND":{"estabs":1844,"estabsChg":9,"estabsPct":0.5,"appsTTM":9497,"appsTTMPrior":8410,"appsYoY":12.9,"est72Apps":504},"OH":{"estabs":25024,"estabsChg":-118,"estabsPct":-0.5,"appsTTM":177676,"appsTTMPrior":144351,"appsYoY":23.1,"est72Apps":9436},"OK":{"estabs":7788,"estabsChg":-4,"estabsPct":-0.1,"appsTTM":66154,"appsTTMPrior":53735,"appsYoY":23.1,"est72Apps":3513},"OR":{"estabs":11530,"estabsChg":-249,"estabsPct":-2.1,"appsTTM":61460,"appsTTMPrior":65359,"appsYoY":-6.0,"est72Apps":3264},"PA":{"estabs":27109,"estabsChg":517,"estabsPct":1.9,"appsTTM":168008,"appsTTMPrior":143780,"appsYoY":16.9,"est72Apps":8923},"RI":{"estabs":3064,"estabsChg":-19,"estabsPct":-0.6,"appsTTM":12323,"appsTTMPrior":11131,"appsYoY":10.7,"est72Apps":654},"SC":{"estabs":11795,"estabsChg":109,"estabsPct":0.9,"appsTTM":99562,"appsTTMPrior":84923,"appsYoY":17.2,"est72Apps":5288},"SD":{"estabs":2060,"estabsChg":27,"estabsPct":1.3,"appsTTM":12848,"appsTTMPrior":11464,"appsYoY":12.1,"est72Apps":682},"TN":{"estabs":14142,"estabsChg":-350,"estabsPct":-2.4,"appsTTM":110566,"appsTTMPrior":89728,"appsYoY":23.2,"est72Apps":5872},"TX":{"estabs":59412,"estabsChg":1207,"estabsPct":2.1,"appsTTM":570752,"appsTTMPrior":486973,"appsYoY":17.2,"est72Apps":30312},"UT":{"estabs":6583,"estabsChg":162,"estabsPct":2.5,"appsTTM":80394,"appsTTMPrior":65218,"appsYoY":23.3,"est72Apps":4270},"VT":{"estabs":1536,"estabsChg":39,"estabsPct":2.6,"appsTTM":8001,"appsTTMPrior":7370,"appsYoY":8.6,"est72Apps":425},"VA":{"estabs":17549,"estabsChg":394,"estabsPct":2.3,"appsTTM":147995,"appsTTMPrior":123807,"appsYoY":19.5,"est72Apps":7860},"WA":{"estabs":17089,"estabsChg":107,"estabsPct":0.6,"appsTTM":116872,"appsTTMPrior":142487,"appsYoY":-18.0,"est72Apps":6207},"WV":{"estabs":3487,"estabsChg":-11,"estabsPct":-0.3,"appsTTM":17905,"appsTTMPrior":14904,"appsYoY":20.1,"est72Apps":951},"WI":{"estabs":13783,"estabsChg":169,"estabsPct":1.2,"appsTTM":76770,"appsTTMPrior":61005,"appsYoY":25.8,"est72Apps":4077},"WY":{"estabs":1435,"estabsChg":33,"estabsPct":2.4,"appsTTM":83249,"appsTTMPrior":68437,"appsYoY":21.6,"est72Apps":4421}}};
+const BFS_MONTHLY = [{"date":"2019-01","value":14268},{"date":"2019-02","value":15204},{"date":"2019-03","value":15128},{"date":"2019-04","value":15475},{"date":"2019-05","value":14935},{"date":"2019-06","value":15404},{"date":"2019-07","value":15003},{"date":"2019-08","value":15625},{"date":"2019-09","value":15579},{"date":"2019-10","value":15817},{"date":"2019-11","value":15783},{"date":"2019-12","value":16461},{"date":"2020-01","value":15256},{"date":"2020-02","value":16657},{"date":"2020-03","value":12069},{"date":"2020-04","value":9399},{"date":"2020-05","value":12387},{"date":"2020-06","value":18947},{"date":"2020-07","value":30627},{"date":"2020-08","value":25274},{"date":"2020-09","value":21639},{"date":"2020-10","value":20617},{"date":"2020-11","value":19919},{"date":"2020-12","value":17446},{"date":"2021-01","value":26663},{"date":"2021-02","value":23636},{"date":"2021-03","value":24179},{"date":"2021-04","value":30611},{"date":"2021-05","value":31624},{"date":"2021-06","value":25498},{"date":"2021-07","value":24833},{"date":"2021-08","value":23364},{"date":"2021-09","value":22849},{"date":"2021-10","value":22633},{"date":"2021-11","value":23577},{"date":"2021-12","value":22372},{"date":"2022-01","value":22435},{"date":"2022-02","value":22161},{"date":"2022-03","value":20621},{"date":"2022-04","value":25319},{"date":"2022-05","value":23552},{"date":"2022-06","value":22712},{"date":"2022-07","value":23584},{"date":"2022-08","value":22957},{"date":"2022-09","value":22795},{"date":"2022-10","value":23425},{"date":"2022-11","value":22682},{"date":"2022-12","value":22953},{"date":"2023-01","value":24112},{"date":"2023-02","value":25569},{"date":"2023-03","value":24301},{"date":"2023-04","value":24821},{"date":"2023-05","value":24713},{"date":"2023-06","value":26501},{"date":"2023-07","value":27076},{"date":"2023-08","value":25644},{"date":"2023-09","value":24530},{"date":"2023-10","value":23430},{"date":"2023-11","value":25779},{"date":"2023-12","value":26240},{"date":"2024-01","value":26387},{"date":"2024-02","value":25438},{"date":"2024-03","value":22258},{"date":"2024-04","value":22108},{"date":"2024-05","value":22182},{"date":"2024-06","value":22357},{"date":"2024-07","value":22679},{"date":"2024-08","value":23492},{"date":"2024-09","value":22765},{"date":"2024-10","value":22505},{"date":"2024-11","value":23802},{"date":"2024-12","value":24976},{"date":"2025-01","value":21287},{"date":"2025-02","value":24140},{"date":"2025-03","value":23444},{"date":"2025-04","value":23858},{"date":"2025-05","value":24361},{"date":"2025-06","value":24959},{"date":"2025-07","value":25385},{"date":"2025-08","value":26083},{"date":"2025-09","value":26266},{"date":"2025-10","value":26049},{"date":"2025-11","value":27001},{"date":"2025-12","value":25249},{"date":"2026-01","value":26719},{"date":"2026-02","value":27777},{"date":"2026-03","value":26762},{"date":"2026-04","value":27438},{"date":"2026-05","value":27946}];
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const fmt=n=>n==null?"—":n.toLocaleString("en-US");
+const C={grid:"#2d3748",tick:"#8b949e",accent:"#ff6b35",accent2:"#ffa94d",green:"#3fb950",red:"#f85149",blue:"#58a6ff",purple:"#bc8cff",yellow:"#d29922"};
+Chart.defaults.color=C.tick; Chart.defaults.borderColor=C.grid; Chart.defaults.font.size=11.5;
+
+/* tabs */
+$("#nav").addEventListener("click",e=>{
+  if(e.target.tagName!=="BUTTON")return;
+  $$("#nav button").forEach(b=>b.classList.toggle("active",b===e.target));
+  $$("section.tab").forEach(s=>s.classList.toggle("active",s.id===e.target.dataset.tab));
+});
+
+/* ================= BACKDROP CHARTS ================= */
+new Chart($("#locChart"),{data:{labels:TQ.map(q=>q[0]),datasets:[
+ {type:"bar",label:"Net adds (k)",data:TQ.map(q=>q[2]),backgroundColor:TQ.map(q=>q[0].startsWith("Q1'26")?C.accent:"#ff6b3580"),borderColor:C.accent,borderWidth:1,yAxisID:"y1",order:2},
+ {type:"line",label:"Total locations (k)",data:TQ.map(q=>q[1]),borderColor:C.blue,backgroundColor:C.blue,pointRadius:2.5,tension:.3,yAxisID:"y",order:1}
+]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+ scales:{y:{position:"left",title:{display:true,text:"locations (k)"}},y1:{position:"right",grid:{display:false},title:{display:true,text:"net adds (k)"},min:0,max:10}},
+ plugins:{legend:{labels:{boxWidth:12}}}}});
+
+const annualChartLabels=[...ANNUAL.map(a=>a[0]),"2026E"];
+const annualChart=new Chart($("#annualChart"),{type:"bar",data:{labels:annualChartLabels,datasets:[{label:"Annual net adds (k)",data:[...ANNUAL.map(a=>a[1]),null],backgroundColor:["#58a6ff66","#58a6ff99","#58a6ffcc","#58a6ff",C.accent]}]},
+ options:{maintainAspectRatio:false,plugins:{legend:{display:false},annotation:undefined,tooltip:{callbacks:{label:c=>` ${c.parsed.y}k net adds`}}},scales:{y:{title:{display:true,text:"k"},suggestedMax:40}}}});
+
+const arrLabels=Object.keys(ARR);
+new Chart($("#arrChart"),{data:{labels:arrLabels,datasets:[
+ {type:"line",label:"ARR ($M)",data:arrLabels.map(k=>ARR[k]),borderColor:C.purple,pointRadius:2,tension:.3,yAxisID:"y"},
+ {type:"line",label:"ARR / location ($k)",data:arrLabels.map(k=>{const q=TQ.find(t=>t[0]===k);return q?+(ARR[k]/q[1]).toFixed(2):null}),borderColor:C.green,pointRadius:2,tension:.3,yAxisID:"y1"}
+]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+ scales:{y:{title:{display:true,text:"$M"}},y1:{position:"right",grid:{display:false},title:{display:true,text:"$k / location"},min:9,max:14}},plugins:{legend:{labels:{boxWidth:12}}}}});
+
+new Chart($("#bfsChart"),{type:"line",data:{labels:BFS_MONTHLY.map(d=>d.date),datasets:[
+ {label:"NAICS-72 applications / mo (SA)",data:BFS_MONTHLY.map(d=>d.value),borderColor:C.accent,backgroundColor:"#ff6b3522",fill:true,pointRadius:0,tension:.25}
+]},options:{maintainAspectRatio:false,scales:{x:{ticks:{maxTicksLimit:10}},y:{title:{display:true,text:"applications"}}},plugins:{legend:{labels:{boxWidth:12}}}}});
+
+new Chart($("#indChart"),{type:"bar",data:{labels:["US industry net estab. growth '25 (QCEW)","Toast net adds '25"],datasets:[{data:[11.5,30],backgroundColor:[C.blue,C.accent],label:"k locations"}]},
+ options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}k`}}},scales:{x:{title:{display:true,text:"k locations"}}}}});
+
+/* ================= FORECAST MODEL ================= */
+const SCEN={
+ bear:{core:22000,fade:-12,ent:3000,entg:-50,intl:1000,intlg:10,ret:800,retg:10,churn:0.4,arpu:2},
+ base:{core:26500,fade:-5,ent:4000,entg:-25,intl:1500,intlg:25,ret:1500,retg:30,churn:0,arpu:4},
+ bull:{core:29000,fade:-2,ent:5000,entg:-10,intl:2000,intlg:35,ret:2000,retg:45,churn:0,arpu:6},
+ mgmt:{core:28000,fade:0,ent:4000,entg:-15,intl:1500,intlg:30,ret:1500,retg:35,churn:0,arpu:4}
+};
+const sl=["core","fade","ent","entg","intl","intlg","ret","retg","churn","arpu"];
+function setScen(s){const p=SCEN[s];sl.forEach(k=>{$("#s_"+k).value=p[k]});$$("#scen button").forEach(b=>b.classList.toggle("on",b.dataset.s===s));runModel()}
+$("#scen").addEventListener("click",e=>{if(e.target.dataset.s)setScen(e.target.dataset.s)});
+sl.forEach(k=>$("#s_"+k).addEventListener("input",()=>{$$("#scen button").forEach(b=>b.classList.remove("on"));runModel()}));
+
+let fcChart=null;
+function runModel(){
+  const g=k=>+$("#s_"+k).value;
+  const core0=g("core"),fade=g("fade")/100,ent0=g("ent"),entg=g("entg")/100,
+        intl0=g("intl"),intlg=g("intlg")/100,ret0=g("ret"),retg=g("retg")/100,
+        churn=g("churn")/100,arpu=g("arpu")/100;
+  $("#v_core").textContent=fmt(core0); $("#v_fade").textContent=(g("fade")>=0?"+":"")+g("fade")+"%/yr";
+  $("#v_ent").textContent=fmt(ent0); $("#v_entg").textContent=(g("entg")>=0?"+":"")+g("entg")+"%/yr";
+  $("#v_intl").textContent=fmt(intl0); $("#v_intlg").textContent="+"+g("intlg")+"%";
+  $("#v_ret").textContent=fmt(ret0); $("#v_retg").textContent="+"+g("retg")+"%";
+  $("#v_churn").textContent=g("churn")+"%"; $("#v_arpu").textContent="+"+g("arpu")+"%";
+
+  let base=164000, arrLoc=12500; // Q4'25
+  const yrs=[2026,2027,2028,2029,2030], rows=[], comp={core:[],ent:[],intl:[],ret:[],churn:[]}, endLoc=[];
+  yrs.forEach((y,i)=>{
+    const cAdd=Math.round(core0*Math.pow(1+fade,i)),
+          eAdd=Math.round(ent0*Math.pow(1+entg,i)),
+          iAdd=Math.round(intl0*Math.pow(1+intlg,i)),
+          rAdd=Math.round(ret0*Math.pow(1+retg,i)),
+          ch=Math.round(base*churn);
+    const net=cAdd+eAdd+iAdd+rAdd-ch;
+    base+=net; arrLoc*=(1+arpu);
+    comp.core.push(cAdd/1000);comp.ent.push(eAdd/1000);comp.intl.push(iAdd/1000);comp.ret.push(rAdd/1000);comp.churn.push(-ch/1000);
+    endLoc.push(base/1000);
+    rows.push({y,net,base,pen:base*0.88/600000,arr:base*arrLoc/1e9});
+  });
+
+  // verdict + 2026 quarterly path (Q1 actual 7k locked)
+  const n26=rows[0].net, rec=n26>30000;
+  const q26=[7, +(0.275*(n26/1000)).toFixed(1), +(0.25*(n26/1000)).toFixed(1), +((n26/1000)-7-0.275*(n26/1000)-0.25*(n26/1000)).toFixed(1)];
+  $("#fcVerdict").innerHTML=`2026E net adds: <span style="color:${rec?'var(--green)':'var(--red)'}">${fmt(n26)}</span> — ${rec?"clears":"MISSES"} the "record &gt;30,000" bar · implied Q2–Q4 path ~${q26[1]}k / ${q26[2]}k / ${q26[3]}k after Q1's actual 7k`;
+
+  let html=`<thead><tr><th>Year</th><th>Net adds</th><th>Ending locations</th><th>y/y</th><th>US SMB penetration [E]</th><th>ARR/loc</th><th>Implied ARR</th><th>ARR y/y</th></tr></thead><tbody>`;
+  let prevBase=164000, prevArr=2047, aLoc=12500;
+  rows.forEach((r,i)=>{
+    aLoc*=(1+arpu);
+    const yoy=100*(r.base-prevBase)/prevBase, ayoy=100*(r.arr*1000-prevArr)/prevArr;
+    html+=`<tr><td>${r.y}E</td><td>${fmt(r.net)}</td><td>${fmt(r.base)}</td><td class="${yoy>15?'pos':''}">${yoy.toFixed(1)}%</td><td>${(100*r.pen).toFixed(1)}%</td><td>$${(aLoc/1000).toFixed(1)}k</td><td>$${r.arr.toFixed(2)}B</td><td>${ayoy.toFixed(1)}%</td></tr>`;
+    prevBase=r.base; prevArr=r.arr*1000;
+  });
+  $("#fcTable").innerHTML=html+"</tbody>";
+
+  // chart: history + forecast
+  const labels=["2022","2023","2024","2025",...yrs.map(y=>y+"E")];
+  const histAdds=[22,27,28,30], histLoc=[79,106,134,164];
+  const pad=a=>[...histAdds.map(()=>null),...a];
+  const data={labels,datasets:[
+    {type:"bar",label:"History (k)",data:[...histAdds,...yrs.map(()=>null)],backgroundColor:"#58a6ff88",stack:"s",yAxisID:"y"},
+    {type:"bar",label:"Core SMB",data:pad(comp.core),backgroundColor:C.accent,stack:"s",yAxisID:"y"},
+    {type:"bar",label:"Enterprise",data:pad(comp.ent),backgroundColor:C.purple,stack:"s",yAxisID:"y"},
+    {type:"bar",label:"International",data:pad(comp.intl),backgroundColor:C.green,stack:"s",yAxisID:"y"},
+    {type:"bar",label:"F&B retail",data:pad(comp.ret),backgroundColor:C.yellow,stack:"s",yAxisID:"y"},
+    {type:"bar",label:"Churn shock",data:pad(comp.churn),backgroundColor:C.red,stack:"s",yAxisID:"y"},
+    {type:"line",label:"Ending locations (k)",data:[...histLoc,...endLoc],borderColor:"#fff",pointRadius:3,tension:.25,yAxisID:"y1"}
+  ]};
+  if(fcChart){fcChart.data=data;fcChart.update()}
+  else fcChart=new Chart($("#fcChart"),{data,options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+    scales:{y:{stacked:true,title:{display:true,text:"net adds (k)"}},y1:{position:"right",grid:{display:false},title:{display:true,text:"locations (k)"}},x:{stacked:true}},
+    plugins:{legend:{labels:{boxWidth:12}}}}});
+
+  // sync 2026E bar on backdrop tab
+  annualChart.data.datasets[0].data[4]=+(n26/1000).toFixed(1); annualChart.update();
+}
+
+/* ================= CUSTOMERS ================= */
+const custSorted=CUST.filter(c=>c[1]&&c[1]>0).sort((a,b)=>b[1]-a[1]);
+new Chart($("#custChart"),{type:"bar",data:{labels:custSorted.map(c=>c[0]),datasets:[{label:"Deal locations",data:custSorted.map(c=>c[1]),
+ backgroundColor:custSorted.map(c=>c[4]>0?C.green:(c[4]<0?C.red:"#8b949e"))}]},
+ options:{maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false},tooltip:{callbacks:{afterLabel:c=>{const r=custSorted[c.dataIndex];return["Chain trend: "+r[5],r[6]]}}}},
+ scales:{x:{title:{display:true,text:"locations under deal (approx / [E] where unverified)"}}}}});
+
+const tagMap={live:["live","LIVE"],roll:["roll","ROLLOUT"],appr:["appr","APPROVED"],lost:["lost","LOST"]};
+$("#custTable tbody").innerHTML=CUST.map(c=>{
+  const t=tagMap[c[3]], cls=c[4]>0?"gpos":(c[4]<0?"gneg":"gflat");
+  return `<tr><td>${c[0]}</td><td>${c[1]==null?"n/d":(c[1]<0?"−"+fmt(-c[1]):"~"+fmt(c[1]))}</td><td>${c[2]}</td><td><span class="tag ${t[0]}">${t[1]}</span></td><td class="${cls}">${c[5]}</td><td style="white-space:normal;text-align:left;max-width:330px">${c[6]}</td></tr>`;
+}).join("");
+
+/* ================= STATE MAP ================= */
+const GRID={AK:[1,1],ME:[11,1],VT:[10,2],NH:[11,2],
+ WA:[1,3],ID:[2,3],MT:[3,3],ND:[4,3],MN:[5,3],WI:[6,3],MI:[8,3],NY:[9,3],MA:[10,3],RI:[11,3],
+ OR:[1,4],NV:[2,4],WY:[3,4],SD:[4,4],IA:[5,4],IL:[6,4],IN:[7,4],OH:[8,4],PA:[9,4],NJ:[10,4],CT:[11,4],
+ CA:[1,5],UT:[2,5],CO:[3,5],NE:[4,5],MO:[5,5],KY:[6,5],WV:[7,5],VA:[8,5],MD:[9,5],DE:[10,5],
+ AZ:[2,6],NM:[3,6],KS:[4,6],AR:[5,6],TN:[6,6],NC:[7,6],SC:[8,6],DC:[9,6],
+ OK:[4,7],LA:[5,7],MS:[6,7],AL:[7,7],GA:[8,7],
+ HI:[1,8],TX:[4,8],FL:[9,8]};
+const METRICS={
+ estabsPct:{lbl:"Restaurant establishment growth y/y % (Q4'25, QCEW)",diverge:true,fmt:v=>v.toFixed(1)+"%"},
+ estabs:{lbl:"Restaurant establishments (Q4'25, QCEW)",diverge:false,fmt:v=>fmt(v)},
+ appsYoY:{lbl:"Total business applications y/y % (TTM May'26, BFS)",diverge:true,fmt:v=>v.toFixed(1)+"%"},
+ est72Apps:{lbl:"Estimated NAICS-72 applications TTM [E]",diverge:false,fmt:v=>fmt(v)}
+};
+let curMetric="estabsPct";
+function colorFor(v,min,max,diverge){
+  if(v==null)return"#333";
+  if(diverge){
+    const m=Math.max(Math.abs(min),Math.abs(max));
+    const t=Math.max(-1,Math.min(1,v/m));
+    return t>=0?`rgba(63,185,80,${0.25+0.75*t})`:`rgba(248,81,73,${0.25+0.75*(-t)})`;
+  }
+  const t=(Math.log(v)-Math.log(min))/(Math.log(max)-Math.log(min));
+  return `rgba(88,166,255,${0.18+0.82*Math.max(0,Math.min(1,t))})`;
+}
+function drawMap(){
+  const m=METRICS[curMetric], vals=Object.keys(GRID).map(s=>STATE_DATA.states[s]?.[curMetric]).filter(v=>v!=null);
+  const min=Math.min(...vals),max=Math.max(...vals);
+  $("#map").innerHTML=Object.entries(GRID).map(([s,[c,r]])=>{
+    const d=STATE_DATA.states[s]||{}; const v=d[curMetric];
+    return `<div class="st" style="grid-column:${c};grid-row:${r};background:${colorFor(v,min,max,m.diverge)}">${s}<small>${v==null?"":m.fmt(v)}</small>
+      <span class="tip"><b>${s}</b><br>Estabs Q4'25: ${fmt(d.estabs)} (${d.estabsPct>0?"+":""}${d.estabsPct}% y/y, ${d.estabsChg>0?"+":""}${fmt(d.estabsChg)})<br>Biz apps TTM: ${fmt(d.appsTTM)} (${d.appsYoY>0?"+":""}${d.appsYoY}%)<br>Est. NAICS-72 apps: ~${fmt(d.est72Apps)} [E]</span></div>`;
+  }).join("");
+  $("#legend").innerHTML=m.diverge
+    ?`<span class="sw" style="background:rgba(248,81,73,.9)"></span> shrinking <span class="sw" style="background:#333"></span> flat <span class="sw" style="background:rgba(63,185,80,.9)"></span> growing &nbsp;·&nbsp; ${m.lbl}`
+    :`<span class="sw" style="background:rgba(88,166,255,.25)"></span> low <span class="sw" style="background:rgba(88,166,255,1)"></span> high &nbsp;·&nbsp; ${m.lbl}`;
+  const ins={
+    estabsPct:"Realized net growth: AR +6.0%, MS +5.0%, CO +4.6%, AL +4.5%, MI/HI +4.2% lead; CA is the fastest mega-state (+3.6%, caveat: possible reclassification); shrinking: MT −5.2%, TN −2.4%, OR −2.1%, NY/IL/OH slightly negative.",
+    estabs:"The conversion pool: CA (91k), TX (59k), NY (50k), FL (50k) hold ~35% of all US restaurant establishments — Toast's core-SMB share gains are won here.",
+    appsYoY:"The forward funnel: OH +23%, NC +21%, AZ +20%, MI +19%, TX +17% accelerating; WA −18% laps an anomalous prior-year spike; WY/DE inflated by registered-agent LLC volume.",
+    est72Apps:"Estimated restaurant-sector applications (state total × 5.31% national NAICS-72 share): FL ~37k, CA ~31k, TX ~30k TTM — Census only publishes NAICS detail nationally, so treat as directional [E]."
+  };
+  $("#mapInsight").textContent=ins[curMetric];
+}
+$("#mapTog").addEventListener("click",e=>{
+  if(!e.target.dataset.m)return;
+  curMetric=e.target.dataset.m;
+  $$("#mapTog button").forEach(b=>b.classList.toggle("on",b===e.target));
+  drawMap();
+});
+
+/* state table */
+let sortK="estabs",sortDir=-1;
+function drawTable(){
+  const rows=Object.entries(STATE_DATA.states).map(([st,d])=>({st,...d}))
+    .sort((a,b)=>{const x=a[sortK],y=b[sortK];if(x==null)return 1;if(y==null)return -1;
+      return (typeof x==="string"?x.localeCompare(y):x-y)*sortDir});
+  $("#stTable tbody").innerHTML=rows.map(r=>
+    `<tr><td>${r.st}</td><td>${fmt(r.estabs)}</td><td class="${r.estabsChg>0?'pos':r.estabsChg<0?'neg':''}">${r.estabsChg>0?"+":""}${fmt(r.estabsChg)}</td>
+     <td class="${r.estabsPct>0?'pos':r.estabsPct<0?'neg':''}">${r.estabsPct>0?"+":""}${r.estabsPct}%</td>
+     <td>${fmt(r.appsTTM)}</td><td class="${r.appsYoY>0?'pos':'neg'}">${r.appsYoY>0?"+":""}${r.appsYoY}%</td><td>~${fmt(r.est72Apps)}</td></tr>`).join("");
+}
+$("#stTable thead").addEventListener("click",e=>{
+  const k=e.target.dataset.k;if(!k)return;
+  if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=k==="st"?1:-1}
+  drawTable();
+});
+
+/* init */
+drawMap(); drawTable(); setScen("base");
+</script>
+</body>
+</html>
