@@ -168,7 +168,7 @@
         <tr><td>Adj. EBITDA</td><td>~$640M</td><td>$808M (guide $790–810M)</td><td>$1,036M</td><td>$1,348M</td></tr>
         <tr><td>FCF</td><td>—</td><td>$714M</td><td>$926M</td><td>$1,266M</td></tr>
         <tr><td>EPS (normalized)</td><td>—</td><td>$1.34</td><td>$1.70</td><td>$2.20</td></tr>
-        <tr><td>Net location adds</td><td>30,000 (record)</td><td colspan="3">No published street figure — mgmt guided "another year of record net adds" (&gt;30k); FY26 recurring GP guide $2,290–2,320M (+21–23%)</td></tr>
+        <tr><td>Net location adds</td><td>30,000 (record)</td><td colspan="3"><b>Visible Alpha consensus FY26E: 31,360</b> (2Q26E +8.23k, 3Q26E +7.98k, 4Q26E +8.09k → 195.3k year-end); mgmt guided "another year of record net adds." FY26 recurring GP guide $2,290–2,320M</td></tr>
       </tbody>
     </table>
     <div class="src">Sources: S&amp;P Capital IQ consensus pulled June 11, 2026; Toast Q1'26 8-K (guidance raised May 7, 2026). FY25 EBITDA shown approximate.</div>
@@ -269,6 +269,16 @@
         <tr><td>🏢 Mgmt</td><td>~32k+</td><td>"Another year of record net adds, core in similar range, new TAMs grow further" — taken literally</td><td>The bar the prints get judged against each quarter</td></tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="panel">
+    <h2>Visible Alpha consensus — the Street's forward path</h2>
+    <div class="note">Pre-2Q26 earnings consensus (Visible Alpha tearsheet). This is the bar each print is judged against; the cyan ◆ markers on the chart above plot VA's FY26E. VA's historical "actuals" reconcile exactly with this dashboard's locations, net adds and GPV series.</div>
+    <table id="vaTable">
+      <thead><tr><th>Period</th><th>Revenue ($M)</th><th>Adj. EBITDA ($M)</th><th>Live locations (k)</th><th>Net adds (k)</th><th>ARR ($M)</th><th>GPV ($B)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="src">Source: Visible Alpha pre-earnings consensus tearsheet (TOST, 2Q26), user-provided. Quarterly consensus for 2Q26E–4Q26E and full-year FY26E. VA segment detail also has Payments ARR $1,026M vs Subscription ARR $1,125M (1Q26A) and take-rate ~2.58%. Reconciles with SEC actuals; consensus values are Street means, not reported.</div>
   </div>
 </section>
 
@@ -535,6 +545,7 @@
         <tr><td>Full quarterly location series</td><td>Q4'21→Q1'26 (see Backdrop)</td><td>Quarterly 8-K Ex-99.1, <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1650164&type=8-K">EDGAR CIK 1650164</a>; transcripts via S&amp;P Capital IQ</td></tr>
         <tr><td>FY26 guidance (rec. GP / adj. EBITDA)</td><td>$2,290–2,320M / $790–810M</td><td>Q1'26 8-K (raised May 7, 2026)</td></tr>
         <tr><td>Consensus (rev/EBITDA/PT)</td><td>FY26 $7.39B / $808M / ~$36</td><td>S&amp;P Capital IQ, pulled June 11, 2026</td></tr>
+        <tr><td>Forward net-adds &amp; quarterly path consensus</td><td>FY26E 31,360 net adds; 2Q26E +8.23k; loc 195.3k; rev $7.41B; EBITDA $807M</td><td>Visible Alpha pre-2Q26 consensus tearsheet (user-provided). VA "actuals" reconcile exactly with the SEC-sourced location/GPV series here.</td></tr>
       </tbody>
     </table>
   </div>
@@ -602,7 +613,15 @@ const TQ = [
  ["Q1'26",171,7]
 ];
 // ARR $M (exact where filed; Q4'23 approx from +34% comp)
-const ARR = {"Q4'21":568,"Q1'22":637,"Q2'22":787,"Q3'22":868,"Q4'22":901,"Q1'23":987,"Q2'23":1100,"Q3'23":1218,"Q4'23":1215,"Q1'24":1300,"Q2'24":1500,"Q3'24":1600,"Q4'24":1626,"Q1'25":1713,"Q2'25":1900,"Q3'25":2000,"Q4'25":2047,"Q1'26":2151};
+const ARR = {"Q4'21":568,"Q1'22":637,"Q2'22":787,"Q3'22":868,"Q4'22":901,"Q1'23":987,"Q2'23":1100,"Q3'23":1218,"Q4'23":1215,"Q1'24":1300,"Q2'24":1500,"Q3'24":1600,"Q4'24":1626,"Q1'25":1713,"Q2'25":1928,"Q3'25":2016,"Q4'25":2047,"Q1'26":2151};
+// Visible Alpha pre-2Q26 consensus tearsheet (VA Actuals confirmed locations/net adds/GPV; ARR refined to VA)
+const VA_NETADDS_FY26=31360, VA_LOC_FY26=195320;
+const VA_CONS=[ // q, revenue $M, ebitda $M, locations k, netAdds k, ARR $M, GPV $B
+ {q:"2Q26E",rev:1874,ebitda:194.65,loc:179.17,net:8.23,arr:2400,gpv:60.0},
+ {q:"3Q26E",rev:1950,ebitda:218.55,loc:187.15,net:7.98,arr:2505,gpv:61.7},
+ {q:"4Q26E",rev:1953,ebitda:214.46,loc:195.24,net:8.09,arr:2534,gpv:61.3},
+ {q:"FY26E",rev:7407,ebitda:806.65,loc:195.32,net:31.36,arr:2531,gpv:234.3}
+];
 const ANNUAL = [["2021",17],["2022",23],["2023",27],["2024",28],["2025",30]];
 
 // Enterprise customers: [name, dealLocs, won, status, trend(-1/0/1), trendTxt, note]
@@ -644,7 +663,7 @@ $("#nav").addEventListener("click",e=>{
 });
 
 const fmt=n=>n==null?"—":n.toLocaleString("en-US");
-const C={grid:"#2d3748",tick:"#8b949e",accent:"#ff6b35",accent2:"#ffa94d",green:"#3fb950",red:"#f85149",blue:"#58a6ff",purple:"#bc8cff",yellow:"#d29922"};
+const C={grid:"#2d3748",tick:"#8b949e",accent:"#ff6b35",accent2:"#ffa94d",green:"#3fb950",red:"#f85149",blue:"#58a6ff",purple:"#bc8cff",yellow:"#d29922",cyan:"#38bdf8"};
 Chart.defaults.color=C.tick; Chart.defaults.borderColor=C.grid; Chart.defaults.font.size=11.5;
 
 /* ================= BACKDROP CHARTS ================= */
@@ -715,7 +734,8 @@ function runModel(){
   // verdict + 2026 quarterly path (Q1 actual 7k locked)
   const n26=rows[0].net, rec=n26>30000;
   const q26=[7, +(0.275*(n26/1000)).toFixed(1), +(0.25*(n26/1000)).toFixed(1), +((n26/1000)-7-0.275*(n26/1000)-0.25*(n26/1000)).toFixed(1)];
-  $("#fcVerdict").innerHTML=`2026E net adds: <span style="color:${rec?'var(--green)':'var(--red)'}">${fmt(n26)}</span> — ${rec?"clears":"MISSES"} the "record &gt;30,000" bar · implied Q2–Q4 path ~${q26[1]}k / ${q26[2]}k / ${q26[3]}k after Q1's actual 7k`;
+  const vsVA=n26-VA_NETADDS_FY26, vaTxt=Math.abs(vsVA)<400?"in line with":(vsVA>0?"above":"below");
+  $("#fcVerdict").innerHTML=`2026E net adds: <span style="color:${rec?'var(--green)':'var(--red)'}">${fmt(n26)}</span> — ${rec?"clears":"MISSES"} the "record &gt;30,000" bar, and is <b>${vaTxt}</b> Visible Alpha consensus of ${fmt(VA_NETADDS_FY26)} (${vsVA>=0?"+":""}${fmt(vsVA)}). Implied Q2–Q4 path ~${q26[1]}k / ${q26[2]}k / ${q26[3]}k after Q1's actual 7k (VA: 8.2 / 8.0 / 8.1).`;
 
   let html=`<thead><tr><th>Year</th><th>Net adds</th><th>Ending locations</th><th>y/y</th><th>US SMB penetration [E]</th><th>ARR/loc</th><th>Implied ARR</th><th>ARR y/y</th></tr></thead><tbody>`;
   let prevBase=164000, prevArr=2047, aLoc=12500;
@@ -738,7 +758,9 @@ function runModel(){
     {type:"bar",label:"International",data:pad(comp.intl),backgroundColor:C.green,stack:"s",yAxisID:"y"},
     {type:"bar",label:"F&B retail",data:pad(comp.ret),backgroundColor:C.yellow,stack:"s",yAxisID:"y"},
     {type:"bar",label:"Churn shock",data:pad(comp.churn),backgroundColor:C.red,stack:"s",yAxisID:"y"},
-    {type:"line",label:"Ending locations (k)",data:[...histLoc,...endLoc],borderColor:"#fff",pointRadius:3,tension:.25,yAxisID:"y1"}
+    {type:"line",label:"Ending locations (k)",data:[...histLoc,...endLoc],borderColor:"#fff",pointRadius:3,tension:.25,yAxisID:"y1"},
+    {type:"line",label:"VA consensus net adds",data:labels.map((l)=>l==="2026E"?VA_NETADDS_FY26/1000:null),yAxisID:"y",showLine:false,pointStyle:"rectRot",pointRadius:9,pointBorderColor:"#fff",pointBackgroundColor:C.cyan||"#38bdf8",order:0},
+    {type:"line",label:"VA consensus locations",data:labels.map((l)=>l==="2026E"?VA_LOC_FY26/1000:null),yAxisID:"y1",showLine:false,pointStyle:"rectRot",pointRadius:9,pointBorderColor:"#000",pointBackgroundColor:C.cyan||"#38bdf8",order:0}
   ]};
   if(fcChart){fcChart.data=data;fcChart.update()}
   else fcChart=new Chart($("#fcChart"),{data,options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
@@ -944,6 +966,7 @@ const rsCell=v=>v==null?'<td class="mut">—</td>':`<td class="${v>0?'pos':v<0?'
 $("#rsTable tbody").innerHTML=RS_TOST.map(d=>`<tr><td>${d.q}</td>${rsCell(rsCardQ("bofa",d.q))}${rsCell(rsCardQ("jR",d.q))}${rsCell(rsCardQ("jL",d.q))}${rsCell(rsCardQ("jF",d.q))}${rsCell(RS_SQ[d.q]??null)}${rsCell(d.gpv)}${rsCell(d.gpl)}</tr>`).join("");
 
 /* init */
+$("#vaTable tbody").innerHTML=VA_CONS.map(d=>`<tr${d.q==="FY26E"?' style="font-weight:600;background:#1b2230"':''}><td>${d.q}</td><td>${fmt(d.rev)}</td><td>${fmt(d.ebitda)}</td><td>${d.loc}</td><td class="pos">+${d.net}</td><td>${fmt(d.arr)}</td><td>$${d.gpv}B</td></tr>`).join("");
 drawMap(); drawTable(); drawHistState(); drawHistTable(); setScen("base");
 </script>
 </body>
