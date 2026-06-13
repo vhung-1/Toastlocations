@@ -114,6 +114,7 @@
   <button data-tab="customers">Biggest Customers</button>
   <button data-tab="states">State Formation Map</button>
   <button data-tab="history">10-Yr Formation History</button>
+  <button data-tab="restspend">Restaurant Spend</button>
   <button data-tab="verify">Sources &amp; Verify</button>
 </nav>
 
@@ -433,6 +434,69 @@
   </div>
 </section>
 
+<!-- ============ RESTAURANT SPEND ============ -->
+<section class="tab" id="restspend">
+  <div class="panel">
+    <h2>Restaurant spending volume — the demand backdrop behind Toast's GPV</h2>
+    <div class="note">Toast revenue ≈ <b>locations × GPV/location × take-rate</b>. Net adds (the other tabs) drive the location term; this tab tracks the <b>GPV/location</b> term — i.e. how much consumers actually spend per restaurant. These are third-party card-spend proxies (Y/Y %): <b>BofA</b> aggregated card data, <b>JPMorgan Chase</b> Consumer Card Spending Index (IF2.0), and <b>Block/Square</b> F&amp;B GPV. The cleanest Toast read is <b>full-service restaurants (FSR)</b>; note FSR is derived by JPM from the NAICS-722 parent <span class="flag">[E]</span>.</div>
+    <div class="grid kpis">
+      <div class="card"><div class="lbl">BofA restaurant spend (May'26)</div><div class="val pos">+3.1%</div><div class="delta pos">y/y · Jun MTD ~+4.3%, reaccelerating</div></div>
+      <div class="card"><div class="lbl">Chase full-service (FSR, May'26)</div><div class="val pos">+2.6%</div><div class="delta mut">Toast's core segment <span class="flag">[E]</span></div></div>
+      <div class="card"><div class="lbl">Chase limited-service (QSR, May'26)</div><div class="val">+1.6%</div><div class="delta neg">cooled from +6.0% mid-'25</div></div>
+      <div class="card"><div class="lbl">Square F&amp;B GPV (1Q26)</div><div class="val pos">+21%</div><div class="delta pos">strongest since 1Q23 (competitor)</div></div>
+      <div class="card"><div class="lbl">Toast GPV / location (1Q26)</div><div class="val neg">−1.0%</div><div class="delta mut">y/y · lags card-spend demand</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Restaurant card spending, year-over-year</h2>
+    <div class="note">Monthly Y/Y %. BofA runs from 2023; Chase series (total food-services, QSR, FSR) from 2024. The 2024–25 deceleration, a mid-2025 trough, and a clear <b>early-2026 reacceleration</b> are all visible. QSR (orange) rolled over hard in 2026 while FSR (green) firmed — a favorable split for Toast's full-service-heavy base.</div>
+    <div class="chartbox tall"><canvas id="rsMonthly"></canvas></div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>The Toast linkage: demand vs per-location monetization</h2>
+      <div class="note">Quarterly. Bars = Toast GPV/location Y/Y; lines = restaurant card-spend Y/Y (quarterly avg). Toast's per-location GPV runs <i>below</i> card-spend demand — the gap is mix shift (newer/QSR/international/smaller-ticket locations dilute the average) plus menu inflation embedded in card data. Watch for GPV/loc to inflect with the 2026 demand pickup.</div>
+      <div class="chartbox"><canvas id="rsLink"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Toast vs Square: F&amp;B volume growth</h2>
+      <div class="note">Quarterly Y/Y. Toast total GPV (+22%, location-driven) vs Square F&amp;B GPV (+21%, accelerating). Square's F&amp;B reacceleration confirms strong SMB restaurant demand — and is a live competitive read, since Square is the share leader Toast competes with for new/independent openings.</div>
+      <div class="chartbox"><canvas id="rsSq"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel bb">
+    <div>
+      <h3 class="pos">▲ Supportive for Toast</h3>
+      <ul>
+        <li><b>Demand inflected up in early 2026:</b> BofA restaurant spend Jan–May'26 averaged ~+2.9% (vs ~+1.0% in early '25); Chase FSR +2.6–4.8%. After two years of deceleration, the consumer-spend backdrop is a tailwind for GPV and the fintech revenue line.</li>
+        <li><b>FSR &gt; QSR split favors Toast's base:</b> full-service (Toast's core) firmed while QSR/LSR cooled from +6% to +1.6% — Toast's mix is FSR-weighted, so the stronger sub-segment is the one that matters most.</li>
+        <li><b>GPV/location troughing:</b> the Y/Y drag narrowed from −3.2% (3Q24) toward flat (+0.2% in 3Q25); sustained demand strength should pull it positive.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="neg">▼ Watch-items</h3>
+      <ul>
+        <li><b>GPV/location still negative (−1% in 1Q26):</b> per-location monetization keeps lagging the card-spend signal — the bear's "ticket dilution" point as Toast adds smaller-ticket QSR/international/new locations.</li>
+        <li><b>Toast is attacking QSR/drive-thru just as QSR spend cools:</b> the segment it's expanding into (limited-service) is the one decelerating most in 2026.</li>
+        <li><b>Square F&amp;B +21% and accelerating:</b> healthy demand, but also evidence the SMB-restaurant share leader is winning volume — competitive pressure on Toast's core funnel.</li>
+        <li><b>These are spend proxies, not Toast actuals:</b> card panels carry mix/inflation and methodology breaks (Chase migrated to IF2.0 in May'26); directional, not a substitute for reported GPV.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Quarterly table</h2>
+    <table id="rsTable">
+      <thead><tr><th>Quarter</th><th>BofA rest.</th><th>Chase food svc</th><th>Chase QSR</th><th>Chase FSR [E]</th><th>Square F&amp;B</th><th>Toast GPV</th><th>Toast GPV/loc</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="src">Card-spend series from the user's US card-spending tracker: BofA aggregated card data, JPMorgan Chase Consumer Card Spending Index (Index File 2.0; migrated May 2026, runs ~80–190bps below IF1.0), and Block/Square shareholder letters (F&amp;B GPV growth only — Block does not disclose the $ value). Chase FSR is derived by residual from the NAICS-722 parent using Census sales weights (±50bps) <span class="flag">[E]</span>. Toast GPV and GPV/location from SEC filings. Quarterly card figures are simple averages of the monthly Y/Y prints. Card panels are demand proxies — they carry merchant-mix and menu-pricing effects and are not Toast actuals.</div>
+  </div>
+</section>
+
 <!-- ============ SOURCES & VERIFY ============ -->
 <section class="tab" id="verify">
   <div class="panel">
@@ -485,6 +549,7 @@
         <tr><td>Topgolf (full rollout by end Q2'26)</td><td><a href="https://www.businesswire.com/news/home/20250508347674/en/">Business Wire, May 2025</a>; venues from Topgolf Callaway 10-K</td></tr>
         <tr><td>Firehouse Subs, Papa Murphy's, TGI Fridays, Caribou, Hungry Howie's, Ascent (Perkins/Huddle House), Nordstrom</td><td>Toast 8-K shareholder letters &amp; earnings calls (Q4'24–Q1'26); partner press releases</td></tr>
         <tr><td>Jamba → Qu (only documented enterprise loss)</td><td>Reforming Retail (Oct 2023); Qu press release (Jan 2025)</td></tr>
+        <tr><td>Restaurant card-spend series (BofA, Chase IF2.0, Square F&amp;B)</td><td>User-provided US card-spending tracker, sourced to BofA aggregated card data, JPMorgan Chase Consumer Card Spending Index, and Block/Square shareholder letters. Demand <i>proxies</i> (carry mix/inflation); Chase FSR is a derived residual <span class="flag">[E]</span>. Not independently reproduced and not Toast actuals.</td></tr>
         <tr><td>Chain net unit growth (Applebee's −35/yr, NBC +100/yr, Hilton NUG +6.7%, Marriott +4.3%, Potbelly, etc.)</td><td>Dine Brands, Hilton, Marriott, Choice, Topgolf/Callaway, Potbelly/RaceTrac SEC filings; Franchise Times</td></tr>
       </tbody>
     </table>
@@ -831,6 +896,52 @@ $("#histYearTable").innerHTML=HY.map((y,i)=>{
   const na=HIST.us_netadds[i], g=usGross[i];
   return `<tr><td>${y}</td><td>${fmt(HIST.us_series[i])}</td><td class="${na==null?'':na<5000?'neg':'pos'}">${na==null?"—":(na>0?"+":"")+fmt(na)}</td><td>${g==null?"—":"~"+fmt(g)}</td></tr>`;
 }).join("");
+
+
+/* ================= RESTAURANT SPEND ================= */
+const RS_M=[
+ {m:"2023-01",bofa:14.46},{m:"2023-02",bofa:7.61},{m:"2023-03",bofa:4.5},{m:"2023-04",bofa:3.65},{m:"2023-05",bofa:3.93},{m:"2023-06",bofa:3.92},{m:"2023-07",bofa:5.27},{m:"2023-08",bofa:2.24},{m:"2023-09",bofa:1.39},{m:"2023-10",bofa:2.04},{m:"2023-11",bofa:2.11},{m:"2023-12",bofa:4.09},
+ {m:"2024-01",bofa:-1.88,jR:-2.1,jL:0.0,jF:-3.9},{m:"2024-02",bofa:-0.65,jR:0.4,jL:1.9,jF:-0.9},{m:"2024-03",bofa:0.11,jR:1.3,jL:2.0,jF:0.7},{m:"2024-04",bofa:0.84,jR:2.3,jL:2.2,jF:2.5},{m:"2024-05",bofa:2.82,jR:2.8,jL:2.3,jF:3.5},{m:"2024-06",bofa:2.77,jR:2.3,jL:2.0,jF:2.9},{m:"2024-07",bofa:-0.28,jR:0.1,jL:-0.5,jF:1.0},{m:"2024-08",bofa:0.13,jR:1.0,jL:0.6,jF:1.8},{m:"2024-09",bofa:1.47,jR:1.8,jL:0.2,jF:3.2},{m:"2024-10",bofa:2.07,jR:1.8,jL:1.3,jF:2.2},{m:"2024-11",bofa:2.26,jR:3.3,jL:3.4,jF:3.2},{m:"2024-12",bofa:0.68,jR:1.7,jL:1.0,jF:2.3},
+ {m:"2025-01",bofa:0.83,jR:2.0,jL:2.3,jF:1.8},{m:"2025-02",bofa:-1.30,jR:-0.2,jL:0.8,jF:-0.9},{m:"2025-03",bofa:1.16,jR:1.9,jL:3.3,jF:0.6},{m:"2025-04",bofa:1.48,jR:1.5,jL:3.9,jF:-0.5},{m:"2025-05",bofa:1.49,jR:2.0,jL:3.7,jF:0.5},{m:"2025-06",bofa:1.68,jR:2.6,jL:4.5,jF:1.0},{m:"2025-07",bofa:2.49,jR:4.0,jL:6.0,jF:2.3},{m:"2025-08",bofa:2.76,jR:4.2,jL:5.7,jF:2.8},{m:"2025-09",bofa:2.22,jR:2.9,jL:4.9,jF:1.1},{m:"2025-10",bofa:1.51,jR:2.8,jL:3.7,jF:2.0},{m:"2025-11",bofa:1.32,jR:1.9,jL:2.2,jF:1.6},{m:"2025-12",bofa:1.75,jR:2.0,jL:2.5,jF:1.6},
+ {m:"2026-01",bofa:1.53,jR:3.1,jL:2.8,jF:3.3},{m:"2026-02",bofa:3.27,jR:4.4,jL:4.0,jF:4.8},{m:"2026-03",bofa:3.38,jR:4.1,jL:4.2,jF:4.0},{m:"2026-04",bofa:3.10,jR:3.1,jL:3.1,jF:3.1},{m:"2026-05",bofa:3.13,jR:2.1,jL:1.6,jF:2.6}
+];
+const RS_TOST=[{q:"1Q24",gpv:30.0,gpl:-2.2},{q:"2Q24",gpv:26.2,gpl:-2.8},{q:"3Q24",gpv:23.7,gpl:-3.2},{q:"4Q24",gpv:25.2,gpl:-1.0},{q:"1Q25",gpv:21.6,gpl:-2.8},{q:"2Q25",gpv:23.2,gpl:-0.9},{q:"3Q25",gpv:23.5,gpl:0.2},{q:"4Q25",gpv:21.8,gpl:-0.7},{q:"1Q26",gpv:21.6,gpl:-1.0}];
+const RS_SQ={"1Q25":10,"2Q25":15,"3Q25":17,"4Q25":16,"1Q26":21};
+const rsLab=m=>{const M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];const[y,mo]=m.split("-");return M[+mo-1]+"'"+y.slice(2);};
+const QMAP={"1Q":[1,2,3],"2Q":[4,5,6],"3Q":[7,8,9],"4Q":[10,11,12]};
+function rsCardQ(field,q){const ms=QMAP[q.slice(0,2)].map(n=>"20"+q.slice(2)+"-"+String(n).padStart(2,"0"));
+  const v=ms.map(mm=>{const r=RS_M.find(x=>x.m===mm);return r?r[field]:undefined;}).filter(x=>x!=null);
+  return v.length?+(v.reduce((a,b)=>a+b,0)/v.length).toFixed(1):null;}
+
+// monthly chart
+new Chart($("#rsMonthly"),{type:"line",data:{labels:RS_M.map(d=>rsLab(d.m)),datasets:[
+ {label:"BofA restaurants",data:RS_M.map(d=>d.bofa??null),borderColor:C.blue,backgroundColor:C.blue,pointRadius:0,tension:.3,borderWidth:2},
+ {label:"Chase food svc (total)",data:RS_M.map(d=>d.jR??null),borderColor:C.purple,backgroundColor:C.purple,pointRadius:0,tension:.3,borderWidth:1.6},
+ {label:"Chase QSR (limited-svc)",data:RS_M.map(d=>d.jL??null),borderColor:C.accent,backgroundColor:C.accent,pointRadius:0,tension:.3,borderWidth:1.6},
+ {label:"Chase FSR (full-svc) [E]",data:RS_M.map(d=>d.jF??null),borderColor:C.green,backgroundColor:C.green,pointRadius:0,tension:.3,borderWidth:2.4}
+]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+ scales:{x:{ticks:{maxTicksLimit:14}},y:{title:{display:true,text:"y/y %"}}},
+ plugins:{legend:{labels:{boxWidth:12}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y==null?"—":(c.parsed.y>=0?"+":"")+c.parsed.y+"%"}`}}}}});
+
+// linkage chart: Toast GPV/loc bars vs card-spend lines (quarterly)
+const rsQL=RS_TOST.map(d=>d.q);
+new Chart($("#rsLink"),{data:{labels:rsQL,datasets:[
+ {type:"bar",label:"Toast GPV/loc Y/Y",data:RS_TOST.map(d=>d.gpl),backgroundColor:RS_TOST.map(d=>d.gpl>=0?C.green:C.red),order:3},
+ {type:"line",label:"BofA rest. (qtr avg)",data:rsQL.map(q=>rsCardQ("bofa",q)),borderColor:C.blue,backgroundColor:C.blue,pointRadius:2,tension:.3,order:1},
+ {type:"line",label:"Chase FSR (qtr avg) [E]",data:rsQL.map(q=>rsCardQ("jF",q)),borderColor:C.green,backgroundColor:C.green,pointRadius:2,tension:.3,order:2}
+]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+ scales:{y:{title:{display:true,text:"y/y %"}}},plugins:{legend:{labels:{boxWidth:12}}}}});
+
+// Toast vs Square F&B
+new Chart($("#rsSq"),{type:"line",data:{labels:rsQL,datasets:[
+ {label:"Toast total GPV Y/Y",data:RS_TOST.map(d=>d.gpv),borderColor:C.accent,backgroundColor:C.accent,pointRadius:2,tension:.3,borderWidth:2.4},
+ {label:"Square F&B GPV Y/Y",data:rsQL.map(q=>RS_SQ[q]??null),borderColor:C.blue,backgroundColor:C.blue,pointRadius:2,tension:.3,borderWidth:2}
+]},options:{maintainAspectRatio:false,interaction:{mode:"index",intersect:false},
+ scales:{y:{title:{display:true,text:"y/y %"},min:0}},plugins:{legend:{labels:{boxWidth:12}}}}});
+
+// quarterly table
+const rsCell=v=>v==null?'<td class="mut">—</td>':`<td class="${v>0?'pos':v<0?'neg':''}">${v>0?"+":""}${v}%</td>`;
+$("#rsTable tbody").innerHTML=RS_TOST.map(d=>`<tr><td>${d.q}</td>${rsCell(rsCardQ("bofa",d.q))}${rsCell(rsCardQ("jR",d.q))}${rsCell(rsCardQ("jL",d.q))}${rsCell(rsCardQ("jF",d.q))}${rsCell(RS_SQ[d.q]??null)}${rsCell(d.gpv)}${rsCell(d.gpl)}</tr>`).join("");
 
 /* init */
 drawMap(); drawTable(); drawHistState(); drawHistTable(); setScen("base");
