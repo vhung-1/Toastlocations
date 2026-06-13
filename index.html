@@ -115,6 +115,7 @@
   <button data-tab="states">State Formation Map</button>
   <button data-tab="history">10-Yr Formation History</button>
   <button data-tab="restspend">Restaurant Spend</button>
+  <button data-tab="nowcast">GPV Nowcast</button>
   <button data-tab="verify">Sources &amp; Verify</button>
 </nav>
 
@@ -507,6 +508,52 @@
   </div>
 </section>
 
+<!-- ============ GPV NOWCAST ============ -->
+<section class="tab" id="nowcast">
+  <div class="panel">
+    <h2>GPV nowcast — card spend as a leading predictor of Toast's quarter</h2>
+    <div class="note">Identity: <b>Toast GPV Y/Y ≈ average-location growth + same-store GPV/location</b>. Location growth is highly predictable from the net-adds run-rate; the same-store term tracks restaurant card spend. We nowcast the in-progress quarter (2Q26, pre-report) from the latest monthly card volumes and benchmark against Visible Alpha consensus ($60.0B / +20.2% Y/Y). Calibrated on 1Q24–1Q26: Toast GPV/location has run ~2.5–3.2pp <i>below</i> card spend (mix shift toward smaller-ticket/new/QSR/international locations) — that spread is the model's key knob.</div>
+    <div class="grid kpis" id="ncKpis"></div>
+  </div>
+
+  <div class="panel">
+    <h2>2Q26 nowcast controls</h2>
+    <div class="scen" id="ncRegime">
+      <button data-s="recent" class="on">Recent-4Q spread (−2.5)</button>
+      <button data-s="full">Full-sample spread (−3.2)</button>
+    </div>
+    <div class="ctrl">
+      <div class="c"><label>Toast-vs-card spread <b id="nc_sv"></b></label><input type="range" id="nc_spread" min="-6" max="0" step="0.1"></div>
+      <div class="c"><label>2Q26 avg-location growth <b id="nc_lv"></b></label><input type="range" id="nc_loc" min="16" max="26" step="0.1"></div>
+      <div class="c"><label>Include Jun MTD in composite <b id="nc_jv"></b></label><input type="range" id="nc_jun" min="0" max="1" step="1"></div>
+    </div>
+    <div class="callout" id="ncOut"></div>
+  </div>
+
+  <div class="cols2">
+    <div class="panel">
+      <h2>Model fit &amp; 2Q26 nowcast</h2>
+      <div class="note">Actual Toast GPV Y/Y (orange) vs the card-spend model (blue, shifts with the spread knob), by quarter. The 2Q26E nowcast (green ◆) and VA consensus (cyan ◆) sit at the right edge.</div>
+      <div class="chartbox"><canvas id="ncChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <h2>Latest monthly card volumes (Y/Y %)</h2>
+      <div class="note">The predictor's live inputs. 2Q QTD = avg(Apr, May); Jun is partial month-to-date (*).</div>
+      <div style="overflow:auto"><table id="ncVolTable"></table></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>How to read it</h2>
+    <ul style="margin-left:18px;font-size:13px">
+      <li style="margin-bottom:7px"><b>Bottom line:</b> with restaurant card spend running firmer in 2026 (composite ~+3%, vs ~+1% a year ago), the model nowcasts 2Q26 GPV <b>modestly above</b> VA consensus across both spread regimes — a small positive read into the print.</li>
+      <li style="margin-bottom:7px"><b>Location growth does the heavy lifting:</b> ~+21–22% avg-location growth is the dominant, high-confidence term; the card data only swings the ~±1pp same-store component. So GPV is predictable; the card edge is at the margin.</li>
+      <li style="margin-bottom:7px"><b>The spread is the honest caveat:</b> Toast's reported GPV/location runs below card spend because new/smaller-ticket locations dilute the average. The link is loose (±1–2pp quarterly error) — this nowcasts the demand component, not a precise GPV print.</li>
+      <li><b>Fintech revenue follows:</b> at Toast's ~2.58% take rate, the nowcast GPV implies fintech revenue near VA's $1,546M for 2Q26 — the card data is ultimately a read on the larger (fintech) half of revenue.</li>
+    </ul>
+  </div>
+</section>
+
 <!-- ============ SOURCES & VERIFY ============ -->
 <section class="tab" id="verify">
   <div class="panel">
@@ -560,6 +607,7 @@
         <tr><td>Topgolf (full rollout by end Q2'26)</td><td><a href="https://www.businesswire.com/news/home/20250508347674/en/">Business Wire, May 2025</a>; venues from Topgolf Callaway 10-K</td></tr>
         <tr><td>Firehouse Subs, Papa Murphy's, TGI Fridays, Caribou, Hungry Howie's, Ascent (Perkins/Huddle House), Nordstrom</td><td>Toast 8-K shareholder letters &amp; earnings calls (Q4'24–Q1'26); partner press releases</td></tr>
         <tr><td>Jamba → Qu (only documented enterprise loss)</td><td>Reforming Retail (Oct 2023); Qu press release (Jan 2025)</td></tr>
+        <tr><td>GPV nowcast model &amp; total-card monthly volumes</td><td>Predictor: Toast GPV Y/Y = avg-location growth × same-store GPV/loc; same-store nowcast = card composite + calibrated spread (full-sample −3.2pp / recent-4Q −2.5pp, fit on 1Q24–1Q26). Total-card monthly Y/Y from BofA/Chase. Model output is an estimate <span class="flag">[E]</span> (±1–2pp), not a Toast disclosure.</td></tr>
         <tr><td>Restaurant card-spend series (BofA, Chase IF2.0, Square F&amp;B)</td><td>User-provided US card-spending tracker, sourced to BofA aggregated card data, JPMorgan Chase Consumer Card Spending Index, and Block/Square shareholder letters. Demand <i>proxies</i> (carry mix/inflation); Chase FSR is a derived residual <span class="flag">[E]</span>. Not independently reproduced and not Toast actuals.</td></tr>
         <tr><td>Chain net unit growth (Applebee's −35/yr, NBC +100/yr, Hilton NUG +6.7%, Marriott +4.3%, Potbelly, etc.)</td><td>Dine Brands, Hilton, Marriott, Choice, Topgolf/Callaway, Potbelly/RaceTrac SEC filings; Franchise Times</td></tr>
       </tbody>
@@ -965,9 +1013,87 @@ new Chart($("#rsSq"),{type:"line",data:{labels:rsQL,datasets:[
 const rsCell=v=>v==null?'<td class="mut">—</td>':`<td class="${v>0?'pos':v<0?'neg':''}">${v>0?"+":""}${v}%</td>`;
 $("#rsTable tbody").innerHTML=RS_TOST.map(d=>`<tr><td>${d.q}</td>${rsCell(rsCardQ("bofa",d.q))}${rsCell(rsCardQ("jR",d.q))}${rsCell(rsCardQ("jL",d.q))}${rsCell(rsCardQ("jF",d.q))}${rsCell(RS_SQ[d.q]??null)}${rsCell(d.gpv)}${rsCell(d.gpl)}</tr>`).join("");
 
+
+/* ================= GPV NOWCAST (card-spend predictor) ================= */
+const NC_AVGLOC={"1Q24":32.9,"2Q24":30.3,"3Q24":28.6,"4Q24":27.3,"1Q25":25.7,"2Q25":24.1,"3Q25":23.1,"4Q25":22.6,"1Q26":22.3};
+const NC_TOTAL={ // total card spend monthly Y/Y % (BofA aggregated card, Chase IF2.0 total)
+ bofa:{"2026-01":2.32,"2026-02":3.29,"2026-03":4.53,"2026-04":4.83,"2026-05":5.25},
+ chase:{"2026-01":3.4,"2026-02":4.0,"2026-03":4.8,"2026-04":5.0,"2026-05":4.8}};
+const NC_JUN={bofaTotal:6.0,bofaRest:4.3}; // June MTD (partial)
+const NC_BASE_GPV=49.9, VA_GPV_2Q=60.0, VA_GPVY_2Q=20.2; // 2Q25 GPV base; VA 2Q26E
+const NC_QS=Object.keys(NC_AVGLOC);
+const ncComp=q=>{const b=rsCardQ("bofa",q),f=rsCardQ("jF",q);return b!=null&&f!=null?+( (b+f)/2 ).toFixed(2):null;};
+function ncComp2Q(withJun){
+  const aprB=RS_M.find(x=>x.m==="2026-04").bofa, mayB=RS_M.find(x=>x.m==="2026-05").bofa;
+  const aprF=RS_M.find(x=>x.m==="2026-04").jF, mayF=RS_M.find(x=>x.m==="2026-05").jF;
+  const bofaQ=withJun?(aprB+mayB+NC_JUN.bofaRest)/3:(aprB+mayB)/2;
+  const fsrQ=(aprF+mayF)/2;
+  return +((bofaQ+fsrQ)/2).toFixed(2);
+}
+let ncChart=null;
+function ncRun(){
+  const spread=+$("#nc_spread").value, loc=+$("#nc_loc").value, jun=+$("#nc_jun").value===1;
+  $("#nc_sv").textContent=spread.toFixed(1)+"pp"; $("#nc_lv").textContent="+"+loc.toFixed(1)+"%";
+  $("#nc_jv").textContent=jun?"yes (Jun "+NC_JUN.bofaRest+"%)":"no";
+  const comp2q=ncComp2Q(jun);
+  const perLoc=comp2q+spread;
+  const gpvY=100*((1+loc/100)*(1+perLoc/100)-1);
+  const gpvUsd=NC_BASE_GPV*(1+gpvY/100);
+  const delta=gpvUsd-VA_GPV_2Q;
+  const fintech=gpvUsd*0.0258*1000; // $M
+  const beat=delta>=0.3?"above":delta<=-0.3?"below":"in line with";
+  // KPIs
+  $("#ncKpis").innerHTML=[
+    ["2Q26 QTD card composite",(comp2q>=0?"+":"")+comp2q.toFixed(1)+"%","BofA rest + Chase FSR"+(jun?", incl Jun MTD":"")],
+    ["Predicted GPV Y/Y",(gpvY>=0?"+":"")+gpvY.toFixed(1)+"%","loc +"+loc.toFixed(0)+"% + same-store "+(perLoc>=0?"+":"")+perLoc.toFixed(1)+"%"],
+    ["Predicted 2Q26 GPV","$"+gpvUsd.toFixed(1)+"B","vs $49.9B in 2Q25"],
+    ["vs VA consensus","$"+VA_GPV_2Q.toFixed(1)+"B → "+(delta>=0?"+":"")+"$"+delta.toFixed(1)+"B",beat+" consensus"]
+  ].map(k=>`<div class="card"><div class="lbl">${k[0]}</div><div class="val ${k[0].startsWith('vs VA')?(delta>=0?'pos':'neg'):''}">${k[1]}</div><div class="delta mut">${k[2]}</div></div>`).join("");
+  $("#ncOut").innerHTML=`<b>Nowcast:</b> 2Q26 GPV ≈ <b style="color:${delta>=0?'var(--green)':'var(--red)'}">$${gpvUsd.toFixed(1)}B (${gpvY>=0?"+":""}${gpvY.toFixed(1)}% Y/Y)</b>, ${beat} VA consensus of $${VA_GPV_2Q.toFixed(1)}B (+${VA_GPVY_2Q}%). Implied fintech revenue ≈ $${fintech.toFixed(0)}M at a 2.58% take rate (VA: $1,546M). Same-store GPV/loc nowcast ${perLoc>=0?"+":""}${perLoc.toFixed(1)}% = card composite ${comp2q.toFixed(1)}% ${spread>=0?"+":""}${spread.toFixed(1)}pp spread.`;
+  // chart
+  const labels=[...NC_QS,"2Q26E"];
+  const actual=[...NC_QS.map(q=>RS_TOST.find(d=>d.q===q).gpv),null];
+  const model=[...NC_QS.map(q=>{const c=ncComp(q);return c==null?null:+(100*((1+NC_AVGLOC[q]/100)*(1+(c+spread)/100)-1)).toFixed(1);}), +gpvY.toFixed(1)];
+  const vaPt=labels.map(l=>l==="2Q26E"?VA_GPVY_2Q:null);
+  const ncPt=labels.map(l=>l==="2Q26E"?+gpvY.toFixed(1):null);
+  const data={labels,datasets:[
+    {label:"Toast GPV Y/Y (actual)",data:actual,borderColor:C.accent,backgroundColor:C.accent,pointRadius:2.5,tension:.3,borderWidth:2.4},
+    {label:"Card-spend model",data:model,borderColor:C.blue,backgroundColor:C.blue,borderDash:[5,4],pointRadius:1.5,tension:.3,borderWidth:1.8},
+    {label:"Nowcast 2Q26E",data:ncPt,borderColor:"#fff",backgroundColor:C.green,pointStyle:"rectRot",pointRadius:9,showLine:false},
+    {label:"VA consensus 2Q26E",data:vaPt,borderColor:"#000",backgroundColor:C.cyan,pointStyle:"rectRot",pointRadius:9,showLine:false}
+  ]};
+  const opts={maintainAspectRatio:false,interaction:{mode:"index",intersect:false},scales:{y:{title:{display:true,text:"GPV y/y %"}}},plugins:{legend:{labels:{boxWidth:12}}}};
+  if(ncChart){ncChart.data=data;ncChart.options=opts;ncChart.update();}
+  else ncChart=new Chart($("#ncChart"),{type:"line",data,options:opts});
+}
+// volume table
+(function(){
+  const months=["2026-01","2026-02","2026-03","2026-04","2026-05"];
+  const rows=[
+    ["BofA — total card","bofaT"],["Chase — total card","chaseT"],
+    ["BofA — restaurants","bofa"],["Chase — food svc","jR"],["Chase — FSR [E]","jF"],["Chase — QSR","jL"]
+  ];
+  const cell=(v,star)=>v==null?'<td class="mut">—</td>':`<td class="${v>0?'pos':v<0?'neg':''}">${v>0?"+":""}${v.toFixed(1)}%${star||""}</td>`;
+  const get=(key,m)=>{
+    if(key==="bofaT")return NC_TOTAL.bofa[m]??null;
+    if(key==="chaseT")return NC_TOTAL.chase[m]??null;
+    const r=RS_M.find(x=>x.m===m);return r?(r[key]??null):null;
+  };
+  const qtd=key=>{const a=get(key,"2026-04"),b=get(key,"2026-05");return a!=null&&b!=null?+((a+b)/2).toFixed(2):null;};
+  const jun=key=>key==="bofaT"?NC_JUN.bofaTotal:key==="bofa"?NC_JUN.bofaRest:null;
+  const head="<thead><tr><th>Series</th>"+months.map(m=>`<th>${rsLab(m)}</th>`).join("")+"<th>2Q QTD</th><th>Jun MTD*</th></tr></thead>";
+  const body="<tbody>"+rows.map(([lab,key])=>`<tr><td style="text-align:left">${lab}</td>`+months.map(m=>cell(get(key,m))).join("")+cell(qtd(key))+cell(jun(key),"*")+"</tr>").join("")+"</tbody>";
+  $("#ncVolTable").innerHTML=head+body;
+})();
+$("#ncRegime").addEventListener("click",e=>{const s=e.target.dataset.s;if(!s)return;
+  $$("#ncRegime button").forEach(b=>b.classList.toggle("on",b===e.target));
+  $("#nc_spread").value=s==="recent"?-2.5:-3.2; ncRun();});
+["nc_spread","nc_loc","nc_jun"].forEach(id=>$("#"+id).addEventListener("input",ncRun));
+$("#nc_spread").value=-2.5; $("#nc_loc").value=21.6; $("#nc_jun").value=0;
+
 /* init */
 $("#vaTable tbody").innerHTML=VA_CONS.map(d=>`<tr${d.q==="FY26E"?' style="font-weight:600;background:#1b2230"':''}><td>${d.q}</td><td>${fmt(d.rev)}</td><td>${fmt(d.ebitda)}</td><td>${d.loc}</td><td class="pos">+${d.net}</td><td>${fmt(d.arr)}</td><td>$${d.gpv}B</td></tr>`).join("");
-drawMap(); drawTable(); drawHistState(); drawHistTable(); setScen("base");
+drawMap(); drawTable(); drawHistState(); drawHistTable(); ncRun(); setScen("base");
 </script>
 </body>
 </html>
