@@ -1,9 +1,9 @@
 {
- "asof": "May 2026",
+ "asof": "2026-05",
  "naics72_ttm": 316120,
  "naics72_ttm_prior": 278742,
  "naics72_share_of_total": 0.0531,
- "us_estabs_q4_2025": 737214,
+ "us_estabs": 737214,
  "us_estabs_yoy_chg": 11880,
  "states": {
   "AL": {
